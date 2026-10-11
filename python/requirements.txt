@@ -1,0 +1,2 @@
+# Sin dependencias externas. Solo Python estandar (>=3.8).
+# Uso: py python/clasificador.py entrada.json salida.json

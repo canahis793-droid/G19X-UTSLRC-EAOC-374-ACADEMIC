@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" font-family="Inter,Segoe UI,Arial">
+<rect width="760" height="180" rx="16" fill="#EFF7FE"/>
+<text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#4C1D95">Flujo principal del sistema</text>
+<g font-size="11.5" text-anchor="middle">
+<g><rect x="10" y="60" width="100" height="60" rx="10" fill="#7C3AED"/><text x="60" y="85" fill="#fff">1. Login</text><text x="60" y="102" fill="#EDE9FE">por rol</text></g>
+<g><rect x="120" y="60" width="100" height="60" rx="10" fill="#7C3AED"/><text x="170" y="85" fill="#fff">2. Fuente</text><text x="170" y="102" fill="#EDE9FE">registro</text></g>
+<g><rect x="230" y="60" width="100" height="60" rx="10" fill="#38BDF8"/><text x="280" y="85" fill="#fff">3. Captura</text><text x="280" y="102" fill="#fff">auto</text></g>
+<g><rect x="340" y="60" width="100" height="60" rx="10" fill="#38BDF8"/><text x="390" y="85" fill="#fff">4. Python</text><text x="390" y="102" fill="#fff">sugiere</text></g>
+<g><rect x="450" y="60" width="100" height="60" rx="10" fill="#A855F7"/><text x="500" y="85" fill="#fff">5. Steward</text><text x="500" y="102" fill="#fff">valida</text></g>
+<g><rect x="560" y="60" width="100" height="60" rx="10" fill="#5B21B6"/><text x="610" y="85" fill="#fff">6. Buscar</text><text x="610" y="102" fill="#EDE9FE">y usar</text></g>
+</g>
+<g stroke="#7C3AED" stroke-width="2"><line x1="110" y1="90" x2="120" y2="90"/><line x1="220" y1="90" x2="230" y2="90"/><line x1="330" y1="90" x2="340" y2="90"/><line x1="440" y1="90" x2="450" y2="90"/><line x1="550" y1="90" x2="560" y2="90"/></g>
+<text x="380" y="150" text-anchor="middle" font-size="12" fill="#6D6A9B">admin registra → sistema captura → Python sugiere → steward valida → usuario encuentra</text>
+</svg>

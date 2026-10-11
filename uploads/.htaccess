@@ -1,0 +1,6 @@
+# Evitar ejecucion de scripts subidos
+RemoveHandler .php .phtml
+<FilesMatch "\.(php|phtml|phar|cgi|pl)$">
+  Require all denied
+</FilesMatch>
+Options -ExecCGI -Indexes

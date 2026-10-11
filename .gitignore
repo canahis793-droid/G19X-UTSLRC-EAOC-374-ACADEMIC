@@ -1,0 +1,14 @@
+# Uploads de usuarios (conservar estructura, no contenido)
+/uploads/*
+!/uploads/.gitkeep
+!/uploads/.htaccess
+
+# Python
+__pycache__/
+*.py[cod]
+*.log
+
+# Sistema
+Thumbs.db
+.DS_Store
+Desktop.ini

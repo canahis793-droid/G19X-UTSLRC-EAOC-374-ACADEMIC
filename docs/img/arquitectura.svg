@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="Inter,Segoe UI,Arial">
+<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#89CFF0"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+<rect width="720" height="300" rx="16" fill="#F4F1FF"/>
+<text x="360" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#4C1D95">Arquitectura: PHP + MySQL + Python</text>
+<g font-size="13" font-weight="bold" text-anchor="middle">
+<rect x="30" y="70" width="140" height="70" rx="12" fill="url(#p)"/><text x="100" y="100" fill="#fff">Usuario</text><text x="100" y="120" fill="#fff" font-size="11">HTML/CSS/JS</text>
+<rect x="210" y="70" width="140" height="70" rx="12" fill="#7C3AED"/><text x="280" y="100" fill="#fff">PHP</text><text x="280" y="120" fill="#fff" font-size="11">Backend + PDO</text>
+<rect x="390" y="70" width="140" height="70" rx="12" fill="#5B21B6"/><text x="460" y="100" fill="#fff">MySQL</text><text x="460" y="120" fill="#fff" font-size="11">metadata_db</text>
+<rect x="210" y="190" width="140" height="70" rx="12" fill="#38BDF8"/><text x="280" y="220" fill="#fff">Python</text><text x="280" y="240" fill="#fff" font-size="11">TF-IDF · reglas</text>
+</g>
+<g stroke="#7C3AED" stroke-width="2" marker-end="url(#a)"><defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#7C3AED"/></marker></defs>
+<line x1="170" y1="105" x2="208" y2="105"/><line x1="350" y1="105" x2="388" y2="105"/>
+<line x1="280" y1="140" x2="280" y2="188"/><line x1="310" y1="225" x2="430" y2="225"/>
+</g>
+<text x="190" y="98" font-size="11" fill="#4C1D95">HTTP</text><text x="355" y="98" font-size="11" fill="#4C1D95">PDO</text>
+<text x="288" y="168" font-size="11" fill="#4C1D95">JSON</text><text x="345" y="218" font-size="11" fill="#4C1D95">resultado</text>
+<text x="470" y="235" font-size="12" fill="#4C1D95">clasifica · enriquece · busca · calidad</text>
+</svg>
