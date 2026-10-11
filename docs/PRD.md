@@ -6,6 +6,7 @@
 | Versión | 1.0.0 |
 | Stack | PHP 8 + MySQL/MariaDB + Python 3 (stdlib) + HTML5/CSS3/JS puro |
 | Entorno | Local, XAMPP (Apache + MariaDB), sin nube ni APIs de pago |
+| Entrada | Front Controller único: `public/index.php?p=modulo[/accion]` (módulos como parciales internos) |
 | Tema visual | Baby blue `#89CFF0` + morado `#7C3AED`, responsive, fuente Inter |
 
 ## 1. Problema
@@ -59,7 +60,8 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 3 cuentas (admin/steward/consulta), 6 fuentes, 18 activos, metadatos/etiquetas/relaciones/calidad/clasificaciones de ejemplo. Migraciones versionadas (`database.sql`, `migracion_v2/v3.sql`).
 
 ## 8. Criterios de aceptación
-- Batería automatizada 22/22 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, fuerza bruta) + crawl 18/18 rutas sin errores.
+- Batería automatizada 22/22 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, fuerza bruta) + crawl 19/19 rutas sin errores.
+- Guía de uso y verificación en 10 pasos (`docs/GUIA_USO.md`).
 - `php -l` limpio, Python solo-stdlib compilado.
 
 ## 9. Fuera de alcance v1.0
