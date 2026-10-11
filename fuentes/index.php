@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 $titulo = 'Fuentes de información';
@@ -44,7 +47,7 @@ registrar_bitacora('eliminar_fuente','fuentes',"Elimino fuente id=$id (a papeler
 flash_set('ok','Fuente eliminada (puedes restaurarla en Papelera).');
 }
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
-redirect(base_url('fuentes/index.php'));
+redirect(base_url('public/index.php?p=fuentes'));
 }
 
 $q = trim($_GET['q'] ?? '');
@@ -64,13 +67,14 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="toolbar">
   <form method="get" class="filters">
+<input type="hidden" name="p" value="fuentes">
     <input name="q" placeholder="Buscar fuente…" value="<?= e($q) ?>">
   <select name="tipo"><option value="">Todos los tipos</option>
     <?php foreach (['Base de datos','Archivo CSV','Archivo JSON','API','Sistema empresarial','Data lake simulado','Otra'] as $t): ?>
       <option <?= $tipo_f===$t?'selected':'' ?>><?= e($t) ?></option><?php endforeach; ?></select>
 <button class="btn">Filtrar</button>
 </form>
-<?php if (puede_editar()): ?><a class="btn btn-primary" href="<?= e(base_url('captura/index.php')) ?>">+ Nueva captura</a><?php endif; ?>
+<?php if (puede_editar()): ?><a class="btn btn-primary" href="<?= e(base_url('public/index.php?p=captura')) ?>">+ Nueva captura</a><?php endif; ?>
 </div>
 
 <?php if (puede_editar()): ?>
@@ -85,7 +89,7 @@ include __DIR__ . '/../includes/header.php';
 <label>Responsable<input name="responsable" value="<?= e($edit['responsable'] ?? '') ?>"></label>
 <label>Estado<select name="estado"><option value="activo">activo</option><option value="inactivo" <?= ($edit['estado']??'')==='inactivo'?'selected':'' ?>>inactivo</option></select></label>
 <label class="full">Descripción<textarea name="descripcion" rows="2"><?= e($edit['descripcion'] ?? '') ?></textarea></label>
-<div><button class="btn btn-primary">Guardar</button> <?php if($edit): ?><a class="btn" href="<?= e(base_url('fuentes/index.php')) ?>">Cancelar</a><?php endif; ?></div>
+<div><button class="btn btn-primary">Guardar</button> <?php if($edit): ?><a class="btn" href="<?= e(base_url('public/index.php?p=fuentes')) ?>">Cancelar</a><?php endif; ?></div>
 </form></div>
 <?php endif; ?>
 
@@ -97,8 +101,8 @@ include __DIR__ . '/../includes/header.php';
     <p class="muted"><?= e(mb_substr($f['descripcion'] ?? '', 0, 140)) ?></p>
     <p class="muted"> <?= e($f['ubicacion'] ?? '—') ?> · <?= e($f['responsable'] ?? '—') ?></p>
     <div class="actions">
-      <a class="btn btn-sm" href="<?= e(base_url('activos/index.php?fuente='.$f['id_fuente'])) ?>">Ver activos</a>
-    <?php if (puede_editar()): ?><a class="btn btn-sm" href="?editar=<?= $f['id_fuente'] ?>">Editar</a>
+      <a class="btn btn-sm" href="<?= e(base_url('public/index.php?p=activos&fuente='.$f['id_fuente'])) ?>">Ver activos</a>
+    <?php if (puede_editar()): ?><a class="btn btn-sm" href="?p=fuentes&editar=<?= $f['id_fuente'] ?>">Editar</a>
     <?php if (es_admin()): ?><form method="post" style="display:inline" data-confirm="¿Eliminar fuente y sus activos?">
         <?= csrf_field() ?><input type="hidden" name="op" value="eliminar"><input type="hidden" name="id_fuente" value="<?= $f['id_fuente'] ?>"><button class="btn btn-sm danger">Eliminar</button></form><?php endif; ?><?php endif; ?>
 </div>

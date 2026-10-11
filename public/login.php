@@ -35,7 +35,7 @@ $_SESSION['correo'] = $u['correo'];
 $_SESSION['rol'] = $u['rol'];
 $db->prepare("UPDATE usuarios SET ultimo_acceso=NOW() WHERE id_usuario=?")->execute([$u['id_usuario']]);
 registrar_bitacora('login', 'auth', 'Inicio de sesion exitoso');
-redirect(base_url('dashboard/index.php'));
+redirect(base_url('public/index.php?p=dashboard'));
 }
 } catch (Exception $ex) {
 $error = 'Error de conexión: ' . $ex->getMessage();

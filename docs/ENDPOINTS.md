@@ -5,36 +5,36 @@ Base: `http://localhost/sistema-metadata-management`
 ## Páginas (requieren sesión salvo login)
 | Método | Ruta | Rol | Descripción |
 |---|---|---|---|
-| GET/POST | /public/login.php | público | Login correo+password |
-| GET | /public/logout.php | auth | Cierra sesión |
-| GET | /dashboard/index.php | todos | Totales, gráficos Canvas, pendientes, bitácora |
-| GET/POST | /usuarios/index.php | admin | CRUD + activar/desactivar |
-| GET/POST | /fuentes/index.php?q=&tipo= | ver todos, editar steward+ | CRUD + filtros |
-| GET | /activos/index.php?q=&categoria=&fuente=&estado= | todos | Catálogo con filtros |
-| GET/POST | /activos/crear.php | steward+ | Crea + pre-clasifica con Python |
-| GET/POST | /activos/editar.php?id= | steward+ | Edita + etiquetas |
-| GET | /activos/detalle.php?id= | todos | Ficha: metadatos, calidad, clasificación, enriquecimiento, relaciones |
-| GET/POST | /metadatos/index.php?activo=&tipo= | ver todos, editar steward+ | CRUD técnico/operativo/negocio |
-| GET | /captura/index.php | steward+ | Formularios MySQL/CSV/JSON/API + historial |
-| POST | /captura/procesar_mysql.php | steward+ | Params: id_fuente,host,bd,user,pass |
-| POST | /captura/procesar_archivo.php | steward+ | multipart archivo, tipo=csv\|json, id_fuente |
-| POST | /captura/procesar_api.php | steward+ | Params: id_fuente,url,nombre |
-| GET/POST | /clasificacion/index.php (?analizar=) | steward+ | Genera con Python, valida/rechaza |
-| GET/POST | /enriquecimiento/index.php (?generar=) | steward+ | Genera sugerencias, acepta (aplica) / rechaza |
-| GET | /busqueda/index.php?q=&modo=inteligente\|normal | todos | MySQL LIKE o Python TF-IDF |
-| GET/POST | /trazabilidad/index.php (?activo=) | ver todos, crear steward+ | CRUD relaciones + mapa JS |
-| GET | /calidad/index.php (?analizar=) | ver todos, evaluar steward+ | Lista + evaluación Python |
-| GET | /reportes/index.php | todos (exportar todos) | Agregados por categoría/fuente/tipo |
-| GET | /reportes/index.php (+POST guardar, ?eliminar_rep=) | todos (eliminar admin) | Resumen + guardar foto + exportar CSV |
-| GET | /reportes/exportar.php?tipo=activos\|calidad\|metadatos\|bitacora | auth | Descarga CSV con BOM |
-| GET | /bitacora/index.php?modulo=&q= | admin | Filtros + export |
-| GET/POST | /configuracion/index.php (+tokens, ?probar_python) | admin | Parámetros, test Python, crear/revocar tokens API |
-| GET | /papelera/index.php (?restaurar=, ?purgar=) | admin | Restaura o purga fuentes/activos/usuarios |
+| GET/POST | /public/index.php?p=public/login | público | Login correo+password |
+| GET | /public/index.php?p=public/logout | auth | Cierra sesión |
+| GET | /public/index.php?p=dashboard | todos | Totales, gráficos Canvas, pendientes, bitácora |
+| GET/POST | /public/index.php?p=usuarios | admin | CRUD + activar/desactivar |
+| GET/POST | /public/index.php?p=fuentes&q=&tipo= | ver todos, editar steward+ | CRUD + filtros |
+| GET | /public/index.php?p=activos&q=&categoria=&fuente=&estado= | todos | Catálogo con filtros |
+| GET/POST | /public/index.php?p=activos/crear | steward+ | Crea + pre-clasifica con Python |
+| GET/POST | /public/index.php?p=activos/editar&id= | steward+ | Edita + etiquetas |
+| GET | /public/index.php?p=activos/detalle&id= | todos | Ficha: metadatos, calidad, clasificación, enriquecimiento, relaciones |
+| GET/POST | /public/index.php?p=metadatos&activo=&tipo= | ver todos, editar steward+ | CRUD técnico/operativo/negocio |
+| GET | /public/index.php?p=captura | steward+ | Formularios MySQL/CSV/JSON/API + historial |
+| POST | /public/index.php?p=captura/procesar_mysql | steward+ | Params: id_fuente,host,bd,user,pass |
+| POST | /public/index.php?p=captura/procesar_archivo | steward+ | multipart archivo, tipo=csv\|json, id_fuente |
+| POST | /public/index.php?p=captura/procesar_api | steward+ | Params: id_fuente,url,nombre |
+| GET/POST | /public/index.php?p=clasificacion (?analizar=) | steward+ | Genera con Python, valida/rechaza |
+| GET/POST | /public/index.php?p=enriquecimiento (?generar=) | steward+ | Genera sugerencias, acepta (aplica) / rechaza |
+| GET | /public/index.php?p=busqueda&q=&modo=inteligente\|normal | todos | MySQL LIKE o Python TF-IDF |
+| GET/POST | /public/index.php?p=trazabilidad (?activo=) | ver todos, crear steward+ | CRUD relaciones + mapa JS |
+| GET | /public/index.php?p=calidad (?analizar=) | ver todos, evaluar steward+ | Lista + evaluación Python |
+| GET | /public/index.php?p=reportes | todos (exportar todos) | Agregados por categoría/fuente/tipo |
+| GET | /public/index.php?p=reportes (+POST guardar, ?eliminar_rep=) | todos (eliminar admin) | Resumen + guardar foto + exportar CSV |
+| GET | /public/index.php?p=reportes/exportar&tipo=activos\|calidad\|metadatos\|bitacora | auth | Descarga CSV con BOM |
+| GET | /public/index.php?p=bitacora&modulo=&q= | admin | Filtros + export |
+| GET/POST | /public/index.php?p=configuracion (+tokens, ?probar_python) | admin | Parámetros, test Python, crear/revocar tokens API |
+| GET | /public/index.php?p=papelera (?restaurar=, ?purgar=) | admin | Restaura o purga fuentes/activos/usuarios |
 
 ## API JSON (sesión o token: `?token=` o `Authorization: Bearer`)
-- `GET /api/activos.php?q=` → [{id,nombre,descripcion,categoria,tipo,fuente}] (401 sin auth)
-- `GET /api/fuentes.php` → [{id,nombre,tipo,estado}]
-- `GET /api/busqueda.php?q=` → {ok,query,resultados:[{id,score}]} (vía `buscador.py`)
+- `GET /public/index.php?p=api/activos&q=` → [{id,nombre,descripcion,categoria,tipo,fuente}] (401 sin auth)
+- `GET /public/index.php?p=api/fuentes` → [{id,nombre,tipo,estado}]
+- `GET /public/index.php?p=api/busqueda&q=` → {ok,query,resultados:[{id,score}]} (vía `buscador.py`)
 
 ## Contratos Python (JSON por archivos temporales)
 - `extractor.py` in {tipo,archivo,nombre} → {ok,resultado|error}

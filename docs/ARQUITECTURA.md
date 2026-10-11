@@ -14,6 +14,9 @@ Usuario → HTML5/CSS3/JS → PHP (controladores por carpeta) → MySQL (PDO)
 ```
 
 ## 3. Capas
+- **Entrada única (Front Controller)**: `public/index.php?p=modulo[/accion]` es el único
+  punto de entrada web; enruta por lista blanca y los archivos de cada módulo son parciales
+  internos (rechazan acceso directo). Login/logout y `api/*` van directo.
 - **Presentación**: `includes/header.php/footer.php` + `assets/css/style.css` (sidebar, cards, tablas, responsive) + `assets/js/*.js` (Canvas puro para gráficos, mapa trazabilidad).
 - **Aplicación**: PHP por módulo (`dashboard/`, `activos/`, `captura/`, etc.). Cada archivo: valida sesión (`auth.php`), verifica rol (`permisos.php`), valida entrada, usa PDO preparadas, registra bitácora, muestra flash.
 - **Datos**: MySQL normalizada (14 tablas, FK, índices, FULLTEXT en activos). Script `database.sql` reproducible.

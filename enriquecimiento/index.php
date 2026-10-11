@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -20,7 +23,7 @@ if (!empty($_GET['generar'])) {
       flash_set('ok','Sugerencias generadas por Python. Revísalas abajo.');
     } else { flash_set('error','Python falló: '.($res['error'] ?? '')); }
 }
-redirect(base_url('enriquecimiento/index.php'));
+redirect(base_url('public/index.php?p=enriquecimiento'));
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $ide = (int)($_POST['id_enriquecimiento'] ?? 0);
@@ -44,14 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   flash_set('ok','Sugerencia rechazada.');
 }
 }
-redirect(base_url('enriquecimiento/index.php'));
+redirect(base_url('public/index.php?p=enriquecimiento'));
 }
 $pend = $db->query("SELECT e.*, a.nombre AS activo FROM enriquecimientos e JOIN activos a ON a.id_activo=e.id_activo WHERE e.estado='pendiente' ORDER BY e.fecha DESC")->fetchAll();
 $activos = $db->query("SELECT * FROM activos ORDER BY nombre LIMIT 100")->fetchAll();
 include __DIR__ . '/../includes/header.php';
 ?>
 <div class="card"><h3>Generar sugerencias (Python)</h3>
-  <form method="get" class="filters"><select name="generar"><?php foreach ($activos as $a): ?><option value="<?= $a['id_activo'] ?>"><?= e($a['nombre']) ?></option><?php endforeach; ?></select><button class="btn btn-primary">Generar</button></form>
+  <form method="get" class="filters">
+<input type="hidden" name="p" value="enriquecimiento"><select name="generar"><?php foreach ($activos as $a): ?><option value="<?= $a['id_activo'] ?>"><?= e($a['nombre']) ?></option><?php endforeach; ?></select><button class="btn btn-primary">Generar</button></form>
 <p class="muted">Python analiza nombre, campos y activos similares. Todo lo generado se marca como "sugerencia".</p></div>
 <?php foreach ($pend as $p): $rels = json_decode($p['relaciones_sugeridas'] ?? '[]', true) ?: []; ?>
   <div class="card"><h3><?= e($p['activo']) ?> <span class="badge">sugerencia Python</span></h3>

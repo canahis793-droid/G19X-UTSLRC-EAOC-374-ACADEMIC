@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -45,4 +48,4 @@ flash_set('ok',"Captura MySQL exitosa: $total tablas nuevas.");
 try { $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,total_activos,estado) VALUES (?,?,?,?,?,?)")->execute([$id_fuente ?: null,$_SESSION['user_id'],'mysql','Error: '.$ex->getMessage(),0,'fallido']); } catch (Exception $e2) {}
 flash_set('error','Error captura MySQL: '.$ex->getMessage());
 }
-redirect(base_url('captura/index.php'));
+redirect(base_url('public/index.php?p=captura'));

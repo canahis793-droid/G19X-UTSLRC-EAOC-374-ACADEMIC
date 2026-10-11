@@ -33,19 +33,19 @@ include __DIR__ . '/../includes/header.php';
   <div class="hero-text"><h2><?= e($saludo) ?>, <?= e(strtok($_SESSION['nombre'] ?? 'Usuario', ' ')) ?> </h2>
     <p><?= $totalActivos ?> activos bajo control · <?= count($porCat) ?> categorías · <?= $totalMetadatos ?> metadatos</p></div>
   <div class="hero-actions">
-    <a class="btn btn-light" href="<?= e(base_url('busqueda/index.php')) ?>"> Buscar</a>
+    <a class="btn btn-light" href="<?= e(base_url('public/index.php?p=busqueda')) ?>"> Buscar</a>
   <?php if (puede_editar()): ?>
-    <a class="btn btn-light" href="<?= e(base_url('activos/crear.php')) ?>"> Nuevo</a>
-  <a class="btn btn-light" href="<?= e(base_url('captura/index.php')) ?>"> Capturar</a>
-<a class="btn btn-light" href="<?= e(base_url('calidad/index.php')) ?>"> Calidad</a>
+    <a class="btn btn-light" href="<?= e(base_url('public/index.php?p=activos/crear')) ?>"> Nuevo</a>
+  <a class="btn btn-light" href="<?= e(base_url('public/index.php?p=captura')) ?>"> Capturar</a>
+<a class="btn btn-light" href="<?= e(base_url('public/index.php?p=calidad')) ?>"> Calidad</a>
 <?php endif; ?>
 </div>
 </div>
 
 <?php if ($pend > 0 || $bajaCalidad > 0): ?>
   <div class="alert-strip">
-    <?php if ($pend > 0): ?><span> <strong><?= $pend ?> pendientes</strong> de validación <a href="<?= e(base_url('clasificacion/index.php')) ?>">revisar →</a></span><?php endif; ?>
-  <?php if ($bajaCalidad > 0): ?><span> <strong><?= $bajaCalidad ?> en calidad crítica</strong> <a href="<?= e(base_url('calidad/index.php')) ?>">atender →</a></span><?php endif; ?>
+    <?php if ($pend > 0): ?><span> <strong><?= $pend ?> pendientes</strong> de validación <a href="<?= e(base_url('public/index.php?p=clasificacion')) ?>">revisar →</a></span><?php endif; ?>
+  <?php if ($bajaCalidad > 0): ?><span> <strong><?= $bajaCalidad ?> en calidad crítica</strong> <a href="<?= e(base_url('public/index.php?p=calidad')) ?>">atender →</a></span><?php endif; ?>
 </div>
 <?php endif; ?>
 
@@ -58,7 +58,7 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="grid-2">
   <div class="card">
-    <div class="card-head"><h3>Activos por categoría</h3><a href="<?= e(base_url('reportes/index.php')) ?>">Ver reportes →</a></div>
+    <div class="card-head"><h3>Activos por categoría</h3><a href="<?= e(base_url('public/index.php?p=reportes')) ?>">Ver reportes →</a></div>
   <canvas id="chartCat" width="400" height="220"></canvas>
 </div>
 <div class="card">
@@ -70,16 +70,16 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="grid-2">
   <div class="card">
-    <div class="card-head"><h3> Necesitan tu atención</h3><a href="<?= e(base_url('calidad/index.php')) ?>">Ir a calidad →</a></div>
+    <div class="card-head"><h3> Necesitan tu atención</h3><a href="<?= e(base_url('public/index.php?p=calidad')) ?>">Ir a calidad →</a></div>
   <table class="table"><thead><tr><th>Activo</th><th>Calidad</th><th></th></tr></thead><tbody>
       <?php foreach ($problemas as $p): ?>
         <tr><td><?= e($p['nombre']) ?></td><td><span class="badge <?= $p['porcentaje']<60?'bad':($p['porcentaje']<80?'warn':'ok') ?>"><?= e($p['porcentaje']) ?>%</span></td>
-        <td><a href="<?= e(base_url('activos/detalle.php?id='.$p['id_activo'])) ?>">Ver</a></td></tr>
+        <td><a href="<?= e(base_url('public/index.php?p=activos/detalle&id='.$p['id_activo'])) ?>">Ver</a></td></tr>
   <?php endforeach; ?>
 </tbody></table>
 </div>
 <div class="card">
-  <div class="card-head"><h3> Actividad reciente</h3><?php if (es_admin()): ?><a href="<?= e(base_url('bitacora/index.php')) ?>">Ver bitácora →</a><?php endif; ?></div>
+  <div class="card-head"><h3> Actividad reciente</h3><?php if (es_admin()): ?><a href="<?= e(base_url('public/index.php?p=bitacora')) ?>">Ver bitácora →</a><?php endif; ?></div>
 <ul class="timeline">
   <?php foreach ($ultimas as $b): ?>
     <li><b><?= e($b['usuario'] ?? '—') ?></b> · <?= e($b['accion']) ?> <small>(<?= e($b['modulo']) ?> · <?= e($b['fecha']) ?>)</small><br><span class="muted"><?= e(mb_substr($b['descripcion'] ?? '', 0, 120)) ?></span></li>

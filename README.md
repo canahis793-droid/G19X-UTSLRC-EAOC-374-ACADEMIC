@@ -144,7 +144,7 @@ http://localhost/sistema-metadata-management/public/login.php
 ```
 config/          database.php (PDO), config.php (app)
 includes/        auth.php, permisos.php, header/footer, funciones.php (puente Python, CSRF…)
-public/          login.php, logout.php, 404.php
+public/          index.php (Front Controller: único punto de entrada ?p=…), login.php, logout.php, 404.php
 dashboard/       tablero general
 usuarios/        CRUD + activar/desactivar (admin)
 fuentes/         CRUD de orígenes

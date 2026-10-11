@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -17,7 +20,7 @@ if (!empty($_GET['borrar_arch']) && puede_editar()) {
     registrar_bitacora('borrar_archivo', 'captura', "Borro archivo $f");
     flash_set('ok', 'Archivo eliminado.');
   }
-redirect(base_url('captura/index.php'));
+redirect(base_url('public/index.php?p=captura'));
 }
 if (!empty($_GET['purgar']) && es_admin()) {
   $n = 0;
@@ -29,7 +32,7 @@ if (!empty($_GET['purgar']) && es_admin()) {
 }
 registrar_bitacora('purgar_archivos', 'captura', "Purgo $n archivos >30 dias");
 flash_set('ok', "Purgados $n archivos antiguos.");
-redirect(base_url('captura/index.php'));
+redirect(base_url('public/index.php?p=captura'));
 }
 $archivos = [];
 foreach (glob(rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR . '*') ?: [] as $path) {
@@ -51,7 +54,7 @@ include __DIR__ . '/../includes/header.php';
 <div class="grid-2">
   <div class="card capture">
     <div class="capture-head"><span class="step-num">1</span><div><h3>Base de datos MySQL</h3><p class="muted">Lee tablas y columnas vía INFORMATION_SCHEMA. Cada tabla será un activo.</p></div></div>
-    <form method="post" action="<?= e(base_url('captura/procesar_mysql.php')) ?>" class="form-grid">
+    <form method="post" action="<?= e(base_url('public/index.php?p=captura/procesar_mysql')) ?>" class="form-grid">
     <?= csrf_field() ?>
     <label class="full">Guardar en fuente*<select name="id_fuente" required><?php foreach ($fuentes as $f): ?><option value="<?= $f['id_fuente'] ?>"><?= e($f['nombre']) ?></option><?php endforeach; ?></select></label>
   <label>Host<input name="host" value="localhost" required></label>
@@ -65,7 +68,7 @@ include __DIR__ . '/../includes/header.php';
 <div>
   <div class="card capture">
     <div class="capture-head"><span class="step-num">2</span><div><h3>Archivo CSV</h3><p class="muted">Python detecta columnas, tipos, filas y vacíos. Máx 10 MB.</p></div></div>
-    <form method="post" enctype="multipart/form-data" action="<?= e(base_url('captura/procesar_archivo.php')) ?>" class="form-grid">
+    <form method="post" enctype="multipart/form-data" action="<?= e(base_url('public/index.php?p=captura/procesar_archivo')) ?>" class="form-grid">
     <?= csrf_field() ?>
     <input type="hidden" name="tipo" value="csv">
     <label>Guardar en fuente*<select name="id_fuente" required><?php foreach ($fuentes as $f): ?><option value="<?= $f['id_fuente'] ?>"><?= e($f['nombre']) ?></option><?php endforeach; ?></select></label>
@@ -75,7 +78,7 @@ include __DIR__ . '/../includes/header.php';
 </div>
 <div class="card capture">
   <div class="capture-head"><span class="step-num">3</span><div><h3>Archivo JSON</h3><p class="muted">Python detecta propiedades, tipos y registros. Máx 10 MB.</p></div></div>
-  <form method="post" enctype="multipart/form-data" action="<?= e(base_url('captura/procesar_archivo.php')) ?>" class="form-grid">
+  <form method="post" enctype="multipart/form-data" action="<?= e(base_url('public/index.php?p=captura/procesar_archivo')) ?>" class="form-grid">
   <?= csrf_field() ?>
   <input type="hidden" name="tipo" value="json">
   <label>Guardar en fuente*<select name="id_fuente" required><?php foreach ($fuentes as $f): ?><option value="<?= $f['id_fuente'] ?>"><?= e($f['nombre']) ?></option><?php endforeach; ?></select></label>
@@ -85,7 +88,7 @@ include __DIR__ . '/../includes/header.php';
 </div>
 <div class="card capture">
   <div class="capture-head"><span class="step-num">4</span><div><h3>Registrar API</h3><p class="muted">Guarda el endpoint y una muestra de respuesta como metadatos.</p></div></div>
-  <form method="post" action="<?= e(base_url('captura/procesar_api.php')) ?>" class="form-grid">
+  <form method="post" action="<?= e(base_url('public/index.php?p=captura/procesar_api')) ?>" class="form-grid">
   <?= csrf_field() ?>
   <label>Guardar en fuente*<select name="id_fuente" required><?php foreach ($fuentes as $f): ?><option value="<?= $f['id_fuente'] ?>"><?= e($f['nombre']) ?></option><?php endforeach; ?></select></label>
 <label>Nombre del activo*<input name="nombre" required placeholder="api_facturas"></label>
@@ -98,10 +101,10 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="card">
   <div class="card-head"><h3> Archivos subidos (<?= count($archivos) ?>)</h3>
-    <?php if (es_admin() && $archivos): ?><a class="btn btn-sm" data-confirm="¿Borrar archivos de más de 30 días?" href="?purgar=1"> Purgar +30 días</a><?php endif; ?></div>
+    <?php if (es_admin() && $archivos): ?><a class="btn btn-sm" data-confirm="¿Borrar archivos de más de 30 días?" href="?p=captura&purgar=1"> Purgar +30 días</a><?php endif; ?></div>
   <table class="table"><thead><tr><th>Archivo</th><th>Tamaño</th><th>Subido</th><th></th></tr></thead><tbody>
       <?php foreach ($archivos as $a): ?><tr><td><?= e($a['nombre']) ?></td><td><?= e($a['kb']) ?> KB</td><td><small><?= e($a['fecha']) ?></small></td>
-          <td><a class="btn btn-sm danger" data-confirm="¿Borrar archivo?" href="?borrar_arch=<?= urlencode($a['nombre']) ?>">Borrar</a></td></tr><?php endforeach; ?>
+          <td><a class="btn btn-sm danger" data-confirm="¿Borrar archivo?" href="?p=captura&borrar_arch=<?= urlencode($a['nombre']) ?>">Borrar</a></td></tr><?php endforeach; ?>
   </tbody></table>
 </div>
 

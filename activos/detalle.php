@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 $db = getDB();
@@ -38,10 +41,10 @@ include __DIR__ . '/../includes/header.php';
 </dl>
 <?php if (puede_editar()): ?>
   <div class="actions">
-    <a class="btn btn-sm btn-primary" href="<?= e(base_url('activos/editar.php?id='.$id)) ?>"> Editar</a>
-  <a class="btn btn-sm" href="<?= e(base_url('metadatos/index.php?activo='.$id)) ?>"> Metadatos</a>
-<a class="btn btn-sm" href="<?= e(base_url('calidad/index.php?analizar='.$id)) ?>"> Calidad Python</a>
-<a class="btn btn-sm" href="<?= e(base_url('enriquecimiento/index.php?generar='.$id)) ?>"> Enriquecer</a>
+    <a class="btn btn-sm btn-primary" href="<?= e(base_url('public/index.php?p=activos/editar&id='.$id)) ?>"> Editar</a>
+  <a class="btn btn-sm" href="<?= e(base_url('public/index.php?p=metadatos&activo='.$id)) ?>"> Metadatos</a>
+<a class="btn btn-sm" href="<?= e(base_url('public/index.php?p=calidad&analizar='.$id)) ?>"> Calidad Python</a>
+<a class="btn btn-sm" href="<?= e(base_url('public/index.php?p=enriquecimiento&generar='.$id)) ?>"> Enriquecer</a>
 </div>
 <?php endif; ?>
 </div>
@@ -92,6 +95,6 @@ include __DIR__ . '/../includes/header.php';
   <?php endforeach; ?>
 <?php if (!$relaciones): ?><p class="muted">Sin relaciones registradas.</p><?php endif; ?>
 </div>
-<a class="btn btn-sm" href="<?= e(base_url('trazabilidad/index.php?activo='.$id)) ?>">Ver en trazabilidad</a>
+<a class="btn btn-sm" href="<?= e(base_url('public/index.php?p=trazabilidad&activo='.$id)) ?>">Ver en trazabilidad</a>
 </div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

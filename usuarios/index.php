@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_admin();
@@ -53,7 +56,7 @@ flash_set('ok', 'Usuario actualizado.');
 }
 } catch (Exception $ex) { flash_set('error', 'Error: ' . $ex->getMessage()); }
 }
-redirect(base_url('usuarios/index.php'));
+redirect(base_url('public/index.php?p=usuarios'));
 }
 if ($op === 'toggle') {
   $id = (int)$_POST['id_usuario'];
@@ -67,7 +70,7 @@ if ($op === 'toggle') {
   registrar_bitacora('cambiar_estado', 'usuarios', "Cambio estado usuario id=$id");
   flash_set('ok', 'Estado actualizado.');
 }
-redirect(base_url('usuarios/index.php'));
+redirect(base_url('public/index.php?p=usuarios'));
 }
 if ($op === 'eliminar') {
   $id = (int)$_POST['id_usuario'];
@@ -86,7 +89,7 @@ if ($op === 'eliminar') {
       flash_set('ok', 'Usuario eliminado (restaurable en Papelera).');
     }
 }
-redirect(base_url('usuarios/index.php'));
+redirect(base_url('public/index.php?p=usuarios'));
 }
 }
 
@@ -111,7 +114,7 @@ include __DIR__ . '/../includes/header.php';
 <label>Contraseña <?= $edit ? '(vacío = no cambiar)' : '' ?><input type="password" name="password" <?= $edit ? '' : 'required' ?>></label>
 <label>Rol<select name="id_rol"><?php foreach ($roles as $r): ?><option value="<?= $r['id_rol'] ?>" <?= isset($edit) && $edit['id_rol']==$r['id_rol']?'selected':'' ?>><?= e($r['nombre']) ?></option><?php endforeach; ?></select></label>
 <label>Estado<select name="estado"><option value="activo" <?= ($edit['estado'] ?? '')==='activo'?'selected':'' ?>>activo</option><option value="inactivo" <?= ($edit['estado'] ?? '')==='inactivo'?'selected':'' ?>>inactivo</option></select></label>
-<div><button class="btn btn-primary"><?= $edit ? 'Guardar' : 'Crear' ?></button> <?php if ($edit): ?><a class="btn" href="<?= e(base_url('usuarios/index.php')) ?>">Cancelar</a><?php endif; ?></div>
+<div><button class="btn btn-primary"><?= $edit ? 'Guardar' : 'Crear' ?></button> <?php if ($edit): ?><a class="btn" href="<?= e(base_url('public/index.php?p=usuarios')) ?>">Cancelar</a><?php endif; ?></div>
 </form>
 </div>
 <div class="card">
@@ -122,7 +125,7 @@ include __DIR__ . '/../includes/header.php';
           <td><span class="badge"><?= e($u['rol']) ?></span></td>
           <td><?= e($u['estado']) ?></td><td><?= e($u['ultimo_acceso'] ?? '—') ?></td>
           <td class="actions">
-            <a class="btn btn-sm" href="?editar=<?= $u['id_usuario'] ?>">Editar</a>
+            <a class="btn btn-sm" href="?p=usuarios&editar=<?= $u['id_usuario'] ?>">Editar</a>
           <form method="post" style="display:inline">
             <?= csrf_field() ?><input type="hidden" name="op" value="toggle"><input type="hidden" name="id_usuario" value="<?= $u['id_usuario'] ?>"><button class="btn btn-sm"><?= $u['estado']==='activo'?'Desactivar':'Activar' ?></button></form>
         <form method="post" style="display:inline" data-confirm="¿Eliminar usuario?">

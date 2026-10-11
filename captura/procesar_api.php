@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -39,8 +42,8 @@ $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,to
 ->execute([$id_fuente,$_SESSION['user_id'],'api',"API $url registrada como $nombre",1,'exitoso']);
 registrar_bitacora('captura_api','captura',"API $url -> activo $idAct");
 flash_set('ok','API registrada correctamente.');
-redirect(base_url('activos/detalle.php?id='.$idAct));
+redirect(base_url('public/index.php?p=activos/detalle&id='.$idAct));
 } catch (Exception $ex) {
 flash_set('error','Error: '.$ex->getMessage());
-redirect(base_url('captura/index.php'));
+redirect(base_url('public/index.php?p=captura'));
 }

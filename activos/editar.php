@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -17,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->prepare("DELETE FROM activos WHERE id_activo=?")->execute([$id]);
     registrar_bitacora('eliminar_activo', 'activos', "Elimino activo id=$id (a papelera)");
     flash_set('ok', 'Activo eliminado (restaurable en Papelera).');
-    redirect(base_url('activos/index.php'));
+    redirect(base_url('public/index.php?p=activos'));
   }
 $nombre = trim($_POST['nombre'] ?? '');
 try {
@@ -34,7 +37,7 @@ try {
   }
 registrar_bitacora('editar_activo','activos',"Edito activo id=$id");
 flash_set('ok','Activo actualizado.');
-redirect(base_url('activos/detalle.php?id='.$id));
+redirect(base_url('public/index.php?p=activos/detalle&id='.$id));
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 }
 $fuentes = $db->query("SELECT * FROM fuentes ORDER BY nombre")->fetchAll();
@@ -55,7 +58,7 @@ include __DIR__ . '/../includes/header.php';
 <label>Estado<select name="estado"><?php foreach (['activo','pendiente','inactivo'] as $es): ?><option <?= $activo['estado']===$es?'selected':'' ?>><?= e($es) ?></option><?php endforeach; ?></select></label>
 <label class="full">Descripción<textarea name="descripcion" rows="3"><?= e($activo['descripcion']) ?></textarea></label>
 <label class="full">Etiquetas (separadas por coma)<input name="etiquetas" value="<?= e($actual) ?>" placeholder="ventas, critico"></label>
-<div><button class="btn btn-primary">Guardar</button> <a class="btn" href="<?= e(base_url('activos/detalle.php?id='.$id)) ?>">Cancelar</a></div>
+<div><button class="btn btn-primary">Guardar</button> <a class="btn" href="<?= e(base_url('public/index.php?p=activos/detalle&id='.$id)) ?>">Cancelar</a></div>
 </form>
 <?php if (es_admin()): ?>
   <form method="post" data-confirm="¿Eliminar este activo? Se guardará en Papelera." style="margin-top:10px">

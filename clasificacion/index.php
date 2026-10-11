@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -24,7 +27,7 @@ if (!empty($_GET['analizar'])) {
 }
 registrar_bitacora('clasificacion','clasificacion',"Python clasifico $n activos (masivo)");
 flash_set('ok',"Clasificaciones generadas: $n.");
-redirect(base_url('clasificacion/index.php'));
+redirect(base_url('public/index.php?p=clasificacion'));
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $idc = (int)($_POST['id_clasificacion'] ?? 0);
@@ -46,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     flash_set('ok','Sugerencia rechazada.');
   }
 }
-redirect(base_url('clasificacion/index.php'));
+redirect(base_url('public/index.php?p=clasificacion'));
 }
 $pend = $db->query("SELECT c.*, a.nombre AS activo FROM clasificaciones c JOIN activos a ON a.id_activo=c.id_activo WHERE c.estado='pendiente' ORDER BY c.fecha DESC")->fetchAll();
 $hist = $db->query("SELECT c.*, a.nombre AS activo FROM clasificaciones c JOIN activos a ON a.id_activo=c.id_activo WHERE c.estado!='pendiente' ORDER BY c.fecha DESC LIMIT 20")->fetchAll();
@@ -55,13 +58,13 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <div class="card-head"><h3> Sin analizar (<?= count($sin) ?>)</h3>
-    <?php if ($sin): ?><a class="btn btn-primary btn-sm" href="?analizar=todos" data-confirm="¿Analizar todos con Python?"> Analizar todos</a><?php endif; ?></div>
+    <?php if ($sin): ?><a class="btn btn-primary btn-sm" href="?p=clasificacion&analizar=todos" data-confirm="¿Analizar todos con Python?"> Analizar todos</a><?php endif; ?></div>
   <p class="muted">Python sugerirá categoría, confianza y palabras clave para cada uno.</p>
   <?php if ($sin): ?>
     <table class="table"><thead><tr><th>Activo</th><th>Tipo</th><th>Fuente</th><th></th></tr></thead><tbody>
         <?php foreach ($sin as $a): ?>
           <tr><td><strong><?= e($a['nombre']) ?></strong></td><td><?= e($a['tipo_activo']) ?></td><td><?= e($a['fuente']) ?></td>
-            <td><a class="btn btn-sm" href="?analizar=<?= $a['id_activo'] ?>">Analizar</a></td></tr>
+            <td><a class="btn btn-sm" href="?p=clasificacion&analizar=<?= $a['id_activo'] ?>">Analizar</a></td></tr>
       <?php endforeach; ?>
   </tbody></table>
 <?php else: ?><p class="empty-note"> Todo analizado. Buen trabajo.</p><?php endif; ?>

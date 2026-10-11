@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 $titulo = 'Búsqueda inteligente';
 $descripcion = 'Encuentra activos aunque no recuerdes el nombre exacto.';
@@ -41,6 +44,7 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="card">
   <form method="get" class="search-big">
+<input type="hidden" name="p" value="busqueda">
     <input name="q" value="<?= e($q) ?>" placeholder='Prueba: "información de compradores"'>
   <select name="modo"><option value="inteligente" <?= $modo!=='normal'?'selected':'' ?>>Inteligente (Python)</option><option value="normal" <?= $modo==='normal'?'selected':'' ?>>Normal (MySQL)</option></select>
 <button class="btn btn-primary">Buscar</button>
@@ -48,9 +52,9 @@ include __DIR__ . '/../includes/header.php';
 <?php if ($q !== ''): ?><p class="muted"><?= e($info) ?> · <?= count($resultados) ?> resultados</p><?php endif; ?>
 <?php if ($q === ''): ?>
   <div class="grid-2" style="margin-top:12px">
-    <div><strong> Más buscado</strong><br><?php foreach ($topBusq as $t): ?><a class="badge" href="?q=<?= urlencode($t['q']) ?>"><?= e($t['q']) ?> (<?= (int)$t['c'] ?>)</a> <?php endforeach; ?>
+    <div><strong> Más buscado</strong><br><?php foreach ($topBusq as $t): ?><a class="badge" href="?p=busqueda&q=<?= urlencode($t['q']) ?>"><?= e($t['q']) ?> (<?= (int)$t['c'] ?>)</a> <?php endforeach; ?>
     <?php if (!$topBusq): ?><small class="muted">Aún sin datos.</small><?php endif; ?></div>
-  <div><strong> Mis recientes</strong><br><?php foreach ($misBusq as $m): ?><a class="badge" href="?q=<?= urlencode($m) ?>"><?= e($m) ?></a> <?php endforeach; ?>
+  <div><strong> Mis recientes</strong><br><?php foreach ($misBusq as $m): ?><a class="badge" href="?p=busqueda&q=<?= urlencode($m) ?>"><?= e($m) ?></a> <?php endforeach; ?>
   <?php if (!$misBusq): ?><small class="muted">Haz tu primera búsqueda.</small><?php endif; ?></div>
 </div>
 <?php endif; ?>
@@ -59,7 +63,7 @@ include __DIR__ . '/../includes/header.php';
   <div class="cards">
     <?php foreach ($resultados as $r): $a = $r['activo']; $pct = round($r['score']*100); ?>
       <div class="card">
-        <h3><a href="<?= e(base_url('activos/detalle.php?id='.($a['id_activo'] ?? $a['id']))) ?>"><?= e($a['nombre']) ?></a></h3>
+        <h3><a href="<?= e(base_url('public/index.php?p=activos/detalle&id='.($a['id_activo'] ?? $a['id']))) ?>"><?= e($a['nombre']) ?></a></h3>
       <p class="muted"><?= e(mb_substr($a['descripcion'] ?? '',0,160)) ?></p>
       <p><span class="badge"><?= e($a['categoria'] ?? '') ?></span> <span class="badge"><?= e($a['tipo_activo'] ?? $a['tipo'] ?? '') ?></span> <span class="muted"><?= e($a['fuente'] ?? '') ?></span></p>
       <div class="bar-row"><div class="bar"><i style="width:<?= min(100,$pct) ?>%"></i></div><b><?= $pct ?>%</b> <small class="muted"><?= e($r['origen']) ?></small></div>

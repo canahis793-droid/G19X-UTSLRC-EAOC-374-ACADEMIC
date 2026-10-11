@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -25,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db->prepare("INSERT INTO clasificaciones (id_activo,categoria_sugerida,confianza,estado,palabras_clave) VALUES (?,?,?,'pendiente',?)")->execute([$id,$sug,$conf,$kw]);
     registrar_bitacora('crear_activo','activos',"Creo activo $nombre id=$id");
     flash_set('ok','Activo creado. Se generó clasificación sugerida con Python.');
-    redirect(base_url('activos/detalle.php?id='.$id));
+    redirect(base_url('public/index.php?p=activos/detalle&id='.$id));
   } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 }
 $fuentes = $db->query("SELECT * FROM fuentes WHERE estado='activo' ORDER BY nombre")->fetchAll();
@@ -42,6 +45,6 @@ include __DIR__ . '/../includes/header.php';
   <label>Área responsable<input name="area_responsable"></label>
   <label>Estado<select name="estado"><option value="pendiente">pendiente</option><option value="activo">activo</option><option value="inactivo">inactivo</option></select></label>
   <label class="full">Descripción<textarea name="descripcion" rows="3"></textarea></label>
-  <div><button class="btn btn-primary">Guardar</button> <a class="btn" href="<?= e(base_url('activos/index.php')) ?>">Volver</a></div>
+  <div><button class="btn btn-primary">Guardar</button> <a class="btn" href="<?= e(base_url('public/index.php?p=activos')) ?>">Volver</a></div>
 </form></div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

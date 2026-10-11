@@ -54,7 +54,6 @@ a{color:var(--purple-dark);text-decoration:none}a:hover{text-decoration:underlin
 .table th,.table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .table th{background:var(--purple-soft);color:var(--purple-deep)}
 .table tr:hover td{background:var(--baby-bg)}
-.table.kv th{width:170px}
 /* Botones */
 .btn{display:inline-block;padding:8px 15px;border-radius:10px;border:2px solid var(--purple-soft);background:#fff;color:var(--purple-dark);cursor:pointer;font-weight:600}
 .btn:hover{border-color:var(--purple);text-decoration:none}
@@ -81,7 +80,6 @@ a{color:var(--purple-dark);text-decoration:none}a:hover{text-decoration:underlin
 .filters input,.filters select{padding:8px 11px;border:2px solid var(--purple-soft);border-radius:10px;background:#fff}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 /* Barras y timeline */
-.bars{display:flex;flex-direction:column;gap:6px}
 .bar-row{display:flex;align-items:center;gap:8px;font-size:13px}
 .bar-row span{width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar{flex:1;background:var(--purple-soft);border-radius:8px;height:12px;overflow:hidden}

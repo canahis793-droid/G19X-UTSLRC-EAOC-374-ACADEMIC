@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
@@ -48,8 +51,8 @@ $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,to
 $db->prepare("UPDATE fuentes SET fecha_ultima_sincronizacion=NOW() WHERE id_fuente=?")->execute([$id_fuente]);
 registrar_bitacora('captura_'.$tipo,'captura',"Archivo $orig -> activo $idAct");
 flash_set('ok',"Archivo analizado con Python. Activo creado: $nombreActivo");
-redirect(base_url('activos/detalle.php?id='.$idAct));
+redirect(base_url('public/index.php?p=activos/detalle&id='.$idAct));
 } catch (Exception $ex) {
 flash_set('error','Error: '.$ex->getMessage());
-redirect(base_url('captura/index.php'));
+redirect(base_url('public/index.php?p=captura'));
 }

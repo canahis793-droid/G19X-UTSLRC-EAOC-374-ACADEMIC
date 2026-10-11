@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_admin();
@@ -24,12 +27,13 @@ $rows = $st->fetchAll();
 include __DIR__ . '/../includes/header.php';
 ?>
 <div class="toolbar"><form class="filters" method="get">
+<input type="hidden" name="p" value="bitacora">
     <input name="q" placeholder="Buscar acción…" value="<?= e($q) ?>">
   <select name="modulo"><option value="">Todos los módulos</option><?php foreach (['auth','usuarios','fuentes','activos','metadatos','captura','clasificacion','enriquecimiento','busqueda','calidad','trazabilidad','reportes'] as $m): ?><option <?= $mod===$m?'selected':'' ?>><?= e($m) ?></option><?php endforeach; ?></select>
 <input type="date" name="desde" value="<?= e($desde) ?>" title="Desde">
 <input type="date" name="hasta" value="<?= e($hasta) ?>" title="Hasta">
 <button class="btn">Filtrar</button>
-<a class="btn" href="<?= e(base_url('reportes/exportar.php?tipo=bitacora')) ?>">Exportar CSV</a></form></div>
+<a class="btn" href="<?= e(base_url('public/index.php?p=reportes/exportar&tipo=bitacora')) ?>">Exportar CSV</a></form></div>
 <div class="card"><table class="table"><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Módulo</th><th>Descripción</th><th>IP</th></tr></thead><tbody>
       <?php foreach ($rows as $r): ?><tr><td><small><?= e($r['fecha']) ?></small></td><td><?= e($r['usuario'] ?? '—') ?></td><td><?= e($r['accion']) ?></td><td><span class="badge"><?= e($r['modulo']) ?></span></td><td><?= e(mb_substr($r['descripcion'] ?? '',0,120)) ?></td><td><?= e($r['ip']) ?></td></tr><?php endforeach; ?>
     </tbody></table>

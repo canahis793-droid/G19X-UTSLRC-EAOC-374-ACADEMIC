@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 requerir_admin();
@@ -53,19 +56,19 @@ if ($db->query("SELECT ROW_COUNT()")->fetchColumn() == 0) throw new Exception('Y
 flash_set('ok', 'Usuario restaurado INACTIVO y sin contraseña: edítalo para activarlo.');
 $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([$id]);
 registrar_bitacora('restaurar', 'papelera', "Restauro usuario {$u['correo']}");
-redirect(base_url('papelera/index.php'));
+redirect(base_url('public/index.php?p=papelera'));
 } else { throw new Exception('Tipo desconocido.'); }
 $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([$id]);
 registrar_bitacora('restaurar', 'papelera', "Restauro {$item['tipo']} {$item['nombre']}");
 flash_set('ok', 'Restaurado correctamente.');
 } catch (Exception $ex) { flash_set('error', 'Error: ' . $ex->getMessage()); }
-redirect(base_url('papelera/index.php'));
+redirect(base_url('public/index.php?p=papelera'));
 }
 if (!empty($_GET['purgar'])) {
   $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([(int)$_GET['purgar']]);
   registrar_bitacora('purgar', 'papelera', 'Elimino definitivo id=' . (int)$_GET['purgar']);
   flash_set('ok', 'Eliminado definitivamente.');
-  redirect(base_url('papelera/index.php'));
+  redirect(base_url('public/index.php?p=papelera'));
 }
 $items = $db->query("SELECT p.*, u.nombre AS usuario FROM papelera p LEFT JOIN usuarios u ON u.id_usuario=p.id_usuario ORDER BY p.fecha DESC")->fetchAll();
 include __DIR__ . '/../includes/header.php';
@@ -75,7 +78,7 @@ include __DIR__ . '/../includes/header.php';
   <table class="table"><thead><tr><th>Tipo</th><th>Nombre</th><th>Borrado</th><th>Por</th><th></th></tr></thead><tbody>
       <?php foreach ($items as $i): ?><tr><td><span class="badge"><?= e($i['tipo']) ?></span></td><td><strong><?= e($i['nombre']) ?></strong></td>
           <td><small><?= e($i['fecha']) ?></small></td><td><?= e($i['usuario'] ?? '—') ?></td>
-          <td class="actions"><a class="btn btn-sm btn-primary" href="?restaurar=<?= $i['id_item'] ?>"> Restaurar</a>
-          <a class="btn btn-sm danger" data-confirm="¿Eliminar DEFINITIVAMENTE? No se puede deshacer." href="?purgar=<?= $i['id_item'] ?>">Eliminar</a></td></tr><?php endforeach; ?>
+          <td class="actions"><a class="btn btn-sm btn-primary" href="?p=papelera&restaurar=<?= $i['id_item'] ?>"> Restaurar</a>
+          <a class="btn btn-sm danger" data-confirm="¿Eliminar DEFINITIVAMENTE? No se puede deshacer." href="?p=papelera&purgar=<?= $i['id_item'] ?>">Eliminar</a></td></tr><?php endforeach; ?>
 </tbody></table></div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

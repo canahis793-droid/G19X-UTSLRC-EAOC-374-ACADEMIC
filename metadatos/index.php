@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 $titulo = 'Gestión de metadatos';
@@ -42,7 +45,7 @@ registrar_bitacora('eliminar_metadato','metadatos','Elimino metadato id='.(int)$
 flash_set('ok','Metadato eliminado.');
 }
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
-redirect(base_url('metadatos/index.php?activo='.(int)($_POST['id_activo'] ?? $_GET['activo'] ?? 0)));
+redirect(base_url('public/index.php?p=metadatos&activo='.(int)($_POST['id_activo'] ?? $_GET['activo'] ?? 0)));
 }
 
 $filtroActivo = (int)($_GET['activo'] ?? 0);
@@ -65,6 +68,7 @@ if (!empty($_GET['editar']) && puede_editar()) {
 include __DIR__ . '/../includes/header.php';
 ?>
 <div class="toolbar"><form class="filters" method="get">
+<input type="hidden" name="p" value="metadatos">
     <select name="activo"><option value="0">Todos los activos</option><?php foreach ($activos as $a): ?><option value="<?= $a['id_activo'] ?>" <?= $filtroActivo==$a['id_activo']?'selected':'' ?>><?= e($a['nombre']) ?></option><?php endforeach; ?></select>
   <select name="tipo"><option value="">Técnico+Operativo+Negocio</option><?php foreach (['tecnico','operativo','negocio'] as $t): ?><option <?= $filtroTipo===$t?'selected':'' ?>><?= e($t) ?></option><?php endforeach; ?></select>
 <button class="btn">Filtrar</button></form></div>
@@ -101,7 +105,7 @@ include __DIR__ . '/../includes/header.php';
 <div class="card"><h3>Metadatos (<?= count($rows) ?>)</h3>
   <table class="table"><thead><tr><th>Activo</th><th>Tipo</th><th>Campo</th><th>Dato</th><th>Definición</th><?php if(puede_editar()): ?><th>Acciones</th><?php endif; ?></tr></thead><tbody>
       <?php foreach ($rows as $r): ?><tr><td><?= e($r['activo']) ?></td><td><span class="badge"><?= e($r['tipo']) ?></span></td><td><?= e($r['nombre_campo']) ?></td><td><?= e($r['tipo_dato']) ?></td><td><?= e(mb_substr($r['descripcion'] ?: $r['definicion_negocio'] ?? '',0,90)) ?></td>
-          <?php if(puede_editar()): ?><td><a class="btn btn-sm" href="?editar=<?= $r['id_metadato'] ?>&activo=<?= $filtroActivo ?>">Editar</a></td><?php endif; ?></tr><?php endforeach; ?>
+          <?php if(puede_editar()): ?><td><a class="btn btn-sm" href="?p=metadatos&editar=<?= $r['id_metadato'] ?>&activo=<?= $filtroActivo ?>">Editar</a></td><?php endif; ?></tr><?php endforeach; ?>
   </tbody></table>
 <?= links_paginacion($pag, $maxpag) ?></div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

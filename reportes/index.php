@@ -1,4 +1,7 @@
 <?php
+// Parcial interno: solo via Front Controller (public/index.php).
+if (!defined('APP_ENTRY')) { header('Location: ../public/index.php'); exit; }
+
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/permisos.php';
 $titulo = 'Reportes';
@@ -24,13 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['op'] ?? '') === 'guardar')
     registrar_bitacora('guardar_reporte', 'reportes', "Guardo reporte $nombre");
     flash_set('ok', 'Reporte guardado.');
   }
-redirect(base_url('reportes/index.php'));
+redirect(base_url('public/index.php?p=reportes'));
 }
 if (!empty($_GET['eliminar_rep']) && es_admin()) {
   $db->prepare("DELETE FROM reportes_guardados WHERE id_reporte=?")->execute([(int)$_GET['eliminar_rep']]);
   registrar_bitacora('eliminar_reporte', 'reportes', 'Elimino reporte id=' . (int)$_GET['eliminar_rep']);
   flash_set('ok', 'Reporte eliminado.');
-  redirect(base_url('reportes/index.php'));
+  redirect(base_url('public/index.php?p=reportes'));
 }
 $guardados = $db->query("SELECT r.*, u.nombre AS usuario FROM reportes_guardados r LEFT JOIN usuarios u ON u.id_usuario=r.id_usuario ORDER BY r.fecha_generacion DESC LIMIT 20")->fetchAll();
 $maxMeta = max(1, max($metaMap));
@@ -54,10 +57,10 @@ include __DIR__ . '/../includes/header.php';
     <div class="card-head"><h3>Exportar</h3><span class="badge">CSV</span></div>
     <p class="muted">Descarga la información para Excel o tus reportes.</p>
     <div class="export-grid">
-      <a class="btn" href="<?= e(base_url('reportes/exportar.php?tipo=activos')) ?>"><strong>Activos</strong><small>Catálogo completo</small></a>
-      <a class="btn" href="<?= e(base_url('reportes/exportar.php?tipo=calidad')) ?>"><strong>Calidad</strong><small>Porcentaje por activo</small></a>
-      <a class="btn" href="<?= e(base_url('reportes/exportar.php?tipo=metadatos')) ?>"><strong>Metadatos</strong><small>Detalle por campo</small></a>
-      <a class="btn" href="<?= e(base_url('reportes/exportar.php?tipo=bitacora')) ?>"><strong>Bitácora</strong><small>Auditoría</small></a>
+      <a class="btn" href="<?= e(base_url('public/index.php?p=reportes/exportar&tipo=activos')) ?>"><strong>Activos</strong><small>Catálogo completo</small></a>
+      <a class="btn" href="<?= e(base_url('public/index.php?p=reportes/exportar&tipo=calidad')) ?>"><strong>Calidad</strong><small>Porcentaje por activo</small></a>
+      <a class="btn" href="<?= e(base_url('public/index.php?p=reportes/exportar&tipo=metadatos')) ?>"><strong>Metadatos</strong><small>Detalle por campo</small></a>
+      <a class="btn" href="<?= e(base_url('public/index.php?p=reportes/exportar&tipo=bitacora')) ?>"><strong>Bitácora</strong><small>Auditoría</small></a>
     </div>
   </div>
 </div>
@@ -76,7 +79,7 @@ include __DIR__ . '/../includes/header.php';
         <td><small><?= e($g['fecha_generacion']) ?></small></td>
         <td><?= e($g['usuario'] ?? '—') ?></td>
         <td><small class="muted">Pend: <?= (int)($rj['pendientes'] ?? 0) ?> · Sin desc: <?= (int)($rj['sin_descripcion'] ?? 0) ?> · Cal: <?= e($rj['calidad_promedio'] ?? '—') ?>%</small></td>
-        <?php if (es_admin()): ?><td><a class="btn btn-sm danger" data-confirm="¿Eliminar reporte guardado?" href="?eliminar_rep=<?= $g['id_reporte'] ?>">Eliminar</a></td><?php endif; ?>
+        <?php if (es_admin()): ?><td><a class="btn btn-sm danger" data-confirm="¿Eliminar reporte guardado?" href="?p=reportes&eliminar_rep=<?= $g['id_reporte'] ?>">Eliminar</a></td><?php endif; ?>
       </tr>
     <?php endforeach; ?>
   </tbody></table>

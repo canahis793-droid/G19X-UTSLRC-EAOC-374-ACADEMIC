@@ -4,7 +4,7 @@ Ejecuta en este orden con datos demo recién importados.
 
 ## P1. Login y roles
 1. `admin@demo.local/admin123` entra a dashboard. Debe ver Usuarios, Bitácora, Configuración.
-2. Sal, entra como `usuario@demo.local/user123`. No debe ver Usuarios/Bitácora (sidebar). Intenta abrir `/usuarios/index.php` → debe decir 403.
+2. Sal, entra como `usuario@demo.local/user123`. No debe ver Usuarios/Bitácora (sidebar). Intenta abrir `/public/index.php?p=usuarios` → debe decir 403.
 3. Sal, entra como `steward@demo.local/steward123`. Debe ver Clasificación/Calidad pero no Usuarios.
 
 ## P2. Fuentes CRUD
