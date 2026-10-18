@@ -11,7 +11,7 @@ http_response_code(404);
       <div class="brand-mark big" style="margin:0 auto">?</div>
       <h2>Error 404</h2>
       <p class="muted">La página solicitada no existe.</p>
-      <p><a class="btn btn-primary" href="../dashboard/index.php">Ir al dashboard</a></p>
+      <p><a class="btn btn-primary" href="<?= e(base_url('public/index.php?p=dashboard')) ?>">Ir al dashboard</a></p>
     </div>
 </body>
 </html>
