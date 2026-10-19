@@ -15,12 +15,8 @@ try {
   $partes = parse_url($url);
   if (!in_array(strtolower($partes['scheme'] ?? ''), ['http','https'], true)) throw new Exception('Solo se permiten URLs http/https.');
   $host = strtolower($partes['host'] ?? '');
-  $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : @gethostbyname($host);
-  if ($host === 'localhost' || $host === '::1' || preg_match('/^(127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|0\.0\.0\.0)/', (string)$ip)) {
-    throw new Exception('Por seguridad no se permiten URLs internas o privadas.');
-  }
-// Intentar obtener muestra (timeout corto, no bloqueante si falla)
-$muestra = '';
+  $ip = validar_host_publico($host);
+  $muestra = '';
 try {
   $ctx = stream_context_create(['http'=>['timeout'=>6,'header'=>"User-Agent: MetaDataManager/1.0\r\n"]]);
   $muestra = @file_get_contents($url, false, $ctx);

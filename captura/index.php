@@ -57,10 +57,12 @@ include __DIR__ . '/../includes/header.php';
     <form method="post" action="<?= e(base_url('public/index.php?p=captura/procesar_mysql')) ?>" class="form-grid">
     <?= csrf_field() ?>
     <label class="full">Guardar en fuente*<select name="id_fuente" required><?php foreach ($fuentes as $f): ?><option value="<?= $f['id_fuente'] ?>"><?= e($f['nombre']) ?></option><?php endforeach; ?></select></label>
-  <label>Host<input name="host" value="localhost" required></label>
+  <label>Host<input name="host" required placeholder="servidor.midominio.com"></label>
+  <label>Puerto<input name="puerto" type="number" min="1" max="65535" value="3306"></label>
   <label>Base de datos*<input name="bd" required placeholder="erp"></label>
   <label>Usuario<input name="user" value="root"></label>
   <label>Contraseña<input type="password" name="pass" autocomplete="off"></label>
+  <div class="full muted">Por seguridad solo se permiten servidores públicos (no localhost ni IPs privadas). La contraseña se usa solo para abrir la conexión: no se guarda.</div>
   <div class="full"><button class="btn btn-primary"> Ejecutar captura MySQL</button></div>
 </form>
 </div>

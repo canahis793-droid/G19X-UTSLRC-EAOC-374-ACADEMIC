@@ -121,6 +121,42 @@ function exigir_csrf() {
     die('Sesión expirada o petición inválida (CSRF). Vuelva atrás y reintente.');
   }
 }
+/**
+ * Resuelve un host y comprueba que NO sea una direccion interna o privada.
+ * Se usa en las capturas externas (MySQL y API) para que un usuario con permiso
+ * no pueda usar la aplicacion para alcanzar maquinas de la red interna (SSRF).
+ * Devuelve la IP validada. Lanza Exception si el host no es valido o es interno.
+ */
+function validar_host_publico($host) {
+  $host = strtolower(trim((string)$host));
+  if ($host === '') throw new Exception('Host es obligatorio.');
+  if (!filter_var($host, FILTER_VALIDATE_IP) && !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+    throw new Exception("Host no valido: $host");
+  }
+  if (filter_var($host, FILTER_VALIDATE_IP)) {
+    $ip = $host;
+  } else {
+    $ip = gethostbyname($host);
+    if ($ip === $host) throw new Exception("No se pudo resolver el host: $host");
+  }
+  if (!filter_var($ip, FILTER_VALIDATE_IP)) throw new Exception("IP no valida para $host.");
+  $permitir_local = defined('CAPTURA_PERMITE_LOCAL') && CAPTURA_PERMITE_LOCAL;
+  if ($permitir_local) return $ip;
+  $bloqueada = $ip === '::1'
+    || str_starts_with($ip, '127.')
+    || str_starts_with($ip, '10.')
+    || str_starts_with($ip, '192.168.')
+    || str_starts_with($ip, '169.254.')
+    || $ip === '0.0.0.0'
+    || preg_match('/^172\.(1[6-9]|2[0-9]|3[01])\./', $ip)
+    || preg_match('/^f[cd][0-9a-f]{2}:/i', $ip)
+    || preg_match('/^fe80:/i', $ip);
+  if ($bloqueada) {
+    throw new Exception("Por seguridad no se permiten conexiones a hosts internos o privados ($host).");
+  }
+  return $ip;
+}
+
 /** Valida token API (?token= o Bearer). Retorna fila usuario+rol o null. */
 function api_token_user() {
   $tok = trim($_GET['token'] ?? '');

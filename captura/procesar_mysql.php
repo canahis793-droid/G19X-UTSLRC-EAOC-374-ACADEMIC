@@ -7,13 +7,19 @@ require_once __DIR__ . '/../includes/permisos.php';
 requerir_steward();
 $db = getDB();
 $id_fuente = (int)($_POST['id_fuente'] ?? 0);
-$host = trim($_POST['host'] ?? 'localhost');
+$host = trim($_POST['host'] ?? '');
 $bdname = trim($_POST['bd'] ?? '');
 $user = trim($_POST['user'] ?? 'root');
 $pass = $_POST['pass'] ?? '';
 try {
   if ($id_fuente <= 0 || $bdname === '') throw new Exception('Fuente y base de datos son obligatorios.');
-  $dsn = "mysql:host=$host;dbname=" . $bdname . ";charset=utf8mb4";
+  if (!preg_match('/^[A-Za-z0-9_$\-]{1,64}$/', $bdname)) throw new Exception('Nombre de base de datos no valido.');
+  $puerto = (int)($_POST['puerto'] ?? 3306);
+  if ($puerto < 1 || $puerto > 65535) throw new Exception('Puerto no valido.');
+  // Anti-SSRF: el host debe ser publico (misma regla que la captura por API).
+  validar_host_publico($host);
+  // La contrasena solo se usa para abrir la conexion: no se guarda en ningun sitio.
+  $dsn = "mysql:host=$host;port=$puerto;dbname=$bdname;charset=utf8mb4";
   $ext = new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
   $tablas = $ext->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=" . $ext->quote($bdname))->fetchAll(PDO::FETCH_COLUMN);
   if (!$tablas) throw new Exception("No se encontraron tablas en $bdname.");

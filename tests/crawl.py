@@ -45,8 +45,10 @@ RUTAS = [
     '/public/index.php?p=configuracion',
 ]
 
+# Errores del motor PHP. No se revisa 'SQLSTATE' porque el historial de
+# capturas muestra a proposito los errores de intentos anteriores.
 FALLAS = ('Fatal error', 'Parse error', 'Warning:', 'Notice:', 'Deprecated:',
-          'Uncaught', 'SQLSTATE', 'Undefined', 'Call to undefined')
+          'Uncaught', 'Call to undefined')
 
 problemas = 0
 

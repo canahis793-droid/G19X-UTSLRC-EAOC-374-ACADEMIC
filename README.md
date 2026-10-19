@@ -22,7 +22,8 @@ Sin frameworks, sin nube, sin APIs de pago. Tema baby blue + morado, responsive.
 9. [Verificación rápida (5 minutos)](#9-verificación-rápida-5-minutos)
 10. [Estructura del proyecto](#10-estructura-del-proyecto)
 11. [Usuarios y roles](#11-usuarios-y-roles)
-12. [Solución de problemas](#12-solución-de-problemas)
+12. [Seguridad de las capturas externas](#12-seguridad-de-las-capturas-externas)
+13. [Solución de problemas](#13-solución-de-problemas)
 
 ---
 
@@ -199,7 +200,35 @@ Solo usan la libreria estandar de Python. Detalle en `tests/README.md`.
 - **Data Steward:** activos, metadatos, capturas, clasificar, enriquecer, calidad, trazabilidad.
 - **Usuario:** dashboard, búsqueda, detalle, trazabilidad, reportes y exportaciones.
 
-## 12. Solución de problemas
+## 12. Seguridad de las capturas externas
+
+Las capturas desde **MySQL** y desde **API** son peticiones que salen del servidor hacia
+otras máquinas. Para que alguien con permiso de captura no pueda usar el sistema para
+alcanzar equipos de la red interna (ataque SSRF), ambas validan el host con la misma
+función `validar_host_publico()` de `includes/funciones.php`:
+
+- Solo se aceptan hosts públicos: bloquea `localhost`, loopback (`127.x`, `::1`),
+  redes privadas (`10.x`, `172.16-31.x`, `192.168.x`), enlace local (`169.254.x`)
+  y direcciones IPv6 internas.
+- Se valida el **puerto** (1–65535) y el **nombre de la base** (solo caracteres seguros).
+
+Si necesitas capturar desde tu propio `localhost` durante una demostración, activa
+`CAPTURA_PERMITE_LOCAL` en `config/config.php` (ponlo en `true`) y vuelve a `false`
+después: con esa opción el sistema puede alcanzar máquinas internas.
+
+### Por qué no se guarda la contraseña de la base externa
+
+La contraseña que escribes en el formulario de captura se usa **únicamente** para abrir
+esa conexión PDO en ese instante. No se escribe en la base de datos, ni en la bitácora,
+ni en el historial de procesos, ni en la sesión. Es la forma correcta de handling: si se
+guardara, quedaría en texto plano accesible a cualquiera con permiso de captura o de
+lectura de la bitácora, y bastaría un respaldo de la base para exponerla. Al no
+guardarla, el único momento en que existe en memoria es mientras corre la captura, y se
+descarta al terminar. Si necesitas capturarla de forma automática en el futuro, el
+lugar correcto es el gestor de secretos del servidor (variables de entorno), no la
+base de datos del catálogo.
+
+## 13. Solución de problemas
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
