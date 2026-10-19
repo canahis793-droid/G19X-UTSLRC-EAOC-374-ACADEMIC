@@ -51,8 +51,10 @@ function nav_act($seccion) {
 <a class="<?= nav_act('papelera') ?>" href="<?= e(base_url('public/index.php?p=papelera')) ?>"> Papelera</a>
 <a class="<?= nav_act('configuracion') ?>" href="<?= e(base_url('public/index.php?p=configuracion')) ?>"> Configuración</a>
 <?php else: ?>
+  <a class="<?= nav_act('reportes') ?>" href="<?= e(base_url('public/index.php?p=reportes')) ?>"> Reportes</a>
+<?php endif; ?>
+<?php if (!in_array($rol, ['administrador', 'steward'], true)): ?>
   <a class="<?= nav_act('trazabilidad') ?>" href="<?= e(base_url('public/index.php?p=trazabilidad')) ?>"> Trazabilidad</a>
-<a class="<?= nav_act('reportes') ?>" href="<?= e(base_url('public/index.php?p=reportes')) ?>"> Reportes</a>
 <?php endif; ?>
 </nav>
 <div class="side-foot">
