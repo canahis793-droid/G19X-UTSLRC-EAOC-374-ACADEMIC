@@ -8,6 +8,15 @@ búsqueda inteligente. Con trazabilidad, calidad medida, reportes, bitácora y c
 **Stack:** PHP 8 + MySQL/MariaDB + Python 3 (solo librería estándar) + HTML5/CSS3/JS puro.
 Sin frameworks, sin nube, sin APIs de pago. Tema baby blue + morado, responsive.
 
+> **Uso de inteligencia artificial:** el desarrollo de este proyecto se apoyó en un
+> asistente de IA (IA generativa) para escribir y revisar código, documentación y
+> pruebas. Todo el resultado fue **revisado, ejecutado y verificado por el autor**
+> (batería de 23 pruebas y crawl de 20 rutas, ver `tests/`). La IA **no** se usa en
+> tiempo de ejecución: el sistema no llama a ningún servicio de IA externo y los
+> datos de la organización nunca salen del servidor. La "inteligencia" del producto
+> es la que implementan los scripts de Python del repositorio (TF-IDF, similitud de
+> coseno, reglas y sinónimos), sin dependencias de pago.
+
 ---
 
 ## Índice

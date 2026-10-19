@@ -12,6 +12,16 @@
 ## 1. Problema
 Los datos viven dispersos (bases, CSV, JSON, APIs) sin inventario central: nadie sabe qué existe, qué significa, quién lo cuida ni qué tan confiable es. Resultado: duplicados, reportes contradictorios y decisiones a ciegas.
 
+## 1.1 Uso de inteligencia artificial (declaración)
+El **desarrollo** de este proyecto se apoyó en un asistente de IA generativa para
+escribir y revisar código, documentación y pruebas; todo el resultado fue revisado,
+ejecutado y verificado por el autor (23 pruebas funcionales y crawl de 20 rutas, en
+`tests/`). La IA **no** interviene en la ejecución del producto: no se llama a
+servicios externos y los datos de la organización no salen del servidor. La
+"inteligencia" que ofrece el sistema es la que implementan los scripts de Python del
+repositorio (tokenización, stopwords, sinónimos, TF-IDF, similitud de coseno y reglas),
+sin dependencias de pago ni cuentas externas.
+
 ## 2. Objetivo del producto
 Plataforma central que **registra fuentes, captura activos automáticamente, documenta metadatos, sugiere con Python, valida con humanos y permite encontrar todo con búsqueda inteligente**, con trazabilidad, calidad medida y auditoría total.
 
@@ -24,7 +34,8 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 
 ## 4. Requerimientos funcionales
 ### F1 Autenticación y sesiones
-- Login correo+contraseña (bcrypt), CSRF, throttle 5 intentos/1 min, expiración 30 min inactivo, cierre de sesión, protección de rutas por rol (403).
+- Login correo+contraseña (bcrypt), CSRF, expiración 30 min inactivo, cierre de sesión, protección de rutas por rol (403).
+- Throttle anti fuerza bruta **en el servidor** (tabla `login_intentos`): 5 fallos bloquean 1 min, escalando hasta 15 min; 20 fallos desde una misma IP bloquean esa IP 5 min. El contador no depende de la sesión, por lo que borrar la cookie no lo reinicia.
 ### F2 Dashboard
 - Saludo, accesos rápidos, 6 KPIs, barras por categoría/fuente (Canvas), top peor calidad, actividad reciente.
 ### F3 Fuentes (CRUD + filtros + conteo de activos; borrado a papelera con cascada documentada)
@@ -33,7 +44,7 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 - Tipos: tabla, archivo, api, dataset, reporte, aplicacion, vista, otro. Categorías: Cliente, Usuario, Venta, Producto, Inventario, Finanzas, Recursos Humanos, Operaciones, Otro. Estados: activo/pendiente/inactivo.
 ### F5 Metadatos (CRUD técnico/operativo/negocio + filtros + paginación)
 ### F6 Captura automática
-- MySQL vía INFORMATION_SCHEMA (tablas→activos, columnas→metadatos, PK/FK, sin duplicados).
+- MySQL vía INFORMATION_SCHEMA (tablas→activos, columnas→metadatos, PK/FK, sin duplicados). Host validado con la misma regla anti-SSRF que la captura por API (solo hosts públicos, puerto 1-65535, nombre de base restringido). La contraseña se usa solo en memoria para abrir la conexión: no se guarda en la base, ni en la bitácora, ni en la sesión.
 - CSV/JSON (upload ≤10 MB, extensión validada, `extractor.py`: columnas/tipos/filas/vacíos o propiedades/registros).
 - API (registro descriptivo + muestra, anti-SSRF: solo http/https públicas).
 - Historial de procesos + gestor de archivos (borrar/purgar +30 días).
