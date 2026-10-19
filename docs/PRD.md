@@ -60,7 +60,7 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 3 cuentas (admin/steward/consulta), 6 fuentes, 18 activos, metadatos/etiquetas/relaciones/calidad/clasificaciones de ejemplo. Migraciones versionadas (`database.sql`, `migracion_v2/v3.sql`).
 
 ## 8. Criterios de aceptación
-- Batería automatizada 22/22 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, fuerza bruta) + crawl 19/19 rutas sin errores.
+- Batería automatizada 22/22 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, API, fuerza bruta) + crawl 20/20 rutas sin errores (`tests/aceptacion.py`, `tests/crawl.py`).
 - Guía de uso y verificación en 10 pasos (`docs/GUIA_USO.md`).
 - `php -l` limpio, Python solo-stdlib compilado.
 

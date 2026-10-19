@@ -41,9 +41,23 @@ py python/buscador.py
 ```
 Deben imprimir JSON con `ok:true`. Si no, revisa `python_path` en Configuración.
 
+## Pruebas automatizadas
+
+Viven en `tests/` y se ejecutan contra la aplicacion ya servida por Apache.
+
+```bash
+py tests/crawl.py        # recorre las 20 pantallas y busca errores de PHP/MySQL
+py tests/aceptacion.py   # 22 pruebas funcionales de los flujos principales
+```
+
+Ambos usan solo la libreria estandar de Python. Aceptan `--url` si la aplicacion
+no esta en `http://localhost/sistema-metadata-management`.
+`tests/aceptacion.py` crea y elimina sus propios datos de prueba.
+
 ## Criterios de aceptación
 - Sin referencias rotas (todas las rutas del sidebar abren).
 - Login rechaza clave mala, usuario inactivo y POST sin CSRF; bloquea tras 5 fallos.
-- PDO sin concatenar variables (revisar código).
+- PDO sin concatenar variables (revisar codigo).
 - Python funciona sin pip (solo stdlib).
-- Batería automatizada: 22/22 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificación masiva, búsqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitácora, test Python, 404, fuerza bruta).
+- Crawl de rutas: 20/20 sin errores.
+- Bateria automatizada: 22/22 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).

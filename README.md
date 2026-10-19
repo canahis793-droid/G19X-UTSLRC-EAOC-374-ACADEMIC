@@ -176,9 +176,21 @@ api/             activos.php, fuentes.php, busqueda.php (sesión o ?token=)
 python/          extractor, clasificador, buscador, calidad, enriquecimiento, nlp_utils
 assets/          css/style.css, js/*.js, img/favicon.svg
 docs/            ARQUITECTURA, ENDPOINTS, MANUAL_USUARIO, PRUEBAS, PRD (+Word)
+tests/           crawl.py (20 rutas), aceptacion.py (22 pruebas), README.md
 uploads/         archivos subidos (protegido con .htaccess)
 database.sql     BD completa + datos · migracion_v2/v3.sql (mejoras)
 ```
+
+## 11. Correr las pruebas automatizadas
+
+Con la aplicacion ya servida por Apache:
+
+```bash
+py tests/crawl.py        # 20 pantallas, busca errores de PHP/MySQL
+py tests/aceptacion.py   # 22 pruebas funcionales de los flujos principales
+```
+
+Solo usan la libreria estandar de Python. Detalle en `tests/README.md`.
 
 ## 11. Usuarios y roles
 
