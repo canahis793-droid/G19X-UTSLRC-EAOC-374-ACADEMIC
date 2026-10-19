@@ -88,7 +88,7 @@ Crea la carpeta `uploads` con escritura (XAMPP en Windows ya la permite):
 
 1. Abre `http://localhost/phpmyadmin`.
 2. Pestaña **Importar** → *Seleccionar archivo* → elige `database.sql` del proyecto → **Importar**.
-3. Verifica: base `metadata_db` con 17 tablas y datos iniciales
+3. Verifica: base `metadata_db` con 18 tablas y datos iniciales
    (3 usuarios, 6 fuentes, 18 activos, 32 metadatos).
 
 **Alternativa por consola:**
@@ -96,6 +96,21 @@ Crea la carpeta `uploads` con escritura (XAMPP en Windows ya la permite):
 C:\xampp\mysql\bin\mysql.exe -u root < C:\xampp\htdocs\sistema-metadata-management\database.sql
 ```
 *(Si tu MariaDB corre en otro puerto, agrega `-P 3307`.)*
+
+### Qué archivo SQL debes usar
+
+| Archivo | Cuándo se usa |
+|---|---|
+| `database.sql` | **Instalación nueva.** Trae el esquema completo (las 18 tablas) y los datos de ejemplo. Es el único que necesitas si partes de cero. |
+| `migracion_v2.sql` | Solo si ya tenías la base de una versión anterior del proyecto: renombra a los usuarios de ejemplo y agrega activos empresariales. |
+| `migracion_v3.sql` | Solo para bases viejas: crea las tablas de tokens API y de la papelera. |
+| `migracion_v4.sql` | Solo para bases viejas: crea la tabla `login_intentos` (límite de intentos de login en el servidor). |
+
+En resumen: **si acabas de instalar el proyecto, importa solo `database.sql`** (ya
+incluye todo lo que las otras migraciones añaden). Los archivos `migracion_*.sql`
+existen únicamente para actualizar una base que ya tenías de una versión previa; no
+hacen falta en una instalación limpia y aplicarlos sobre una base recién creada no
+aportan nada.
 
 ## 6. Configurar la aplicación
 
@@ -188,7 +203,7 @@ assets/          css/style.css, js/*.js, img/favicon.svg
 docs/            ARQUITECTURA, ENDPOINTS, MANUAL_USUARIO, PRUEBAS, PRD (+Word)
 tests/           crawl.py (20 rutas), aceptacion.py (22 pruebas), README.md
 uploads/         archivos subidos (protegido con .htaccess)
-database.sql     BD completa + datos · migracion_v2/v3.sql (mejoras)
+database.sql     BD completa + datos (18 tablas) · migracion_v2/v3/v4.sql solo para bases viejas
 ```
 
 ## 11. Correr las pruebas automatizadas
@@ -252,6 +267,7 @@ borrar la cookie para reiniciarlo y el ataque sería trivial.
 
 Si instalaste el sistema con una base ya existente, aplica `migracion_v4.sql` para crear
 la tabla `login_intentos` (si no está, el sistema sigue funcionando pero sin el bloqueo).
+En una instalación nueva no hace falta: `database.sql` ya la incluye.
 
 ## 13. Solución de problemas
 

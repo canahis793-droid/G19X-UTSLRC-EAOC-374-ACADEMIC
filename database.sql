@@ -25,6 +25,9 @@ DROP TABLE IF EXISTS fuentes;
 DROP TABLE IF EXISTS usuarios;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS configuracion;
+DROP TABLE IF EXISTS api_tokens;
+DROP TABLE IF EXISTS papelera;
+DROP TABLE IF EXISTS login_intentos;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ---------------- Roles ----------------
