@@ -5,15 +5,17 @@ require_once __DIR__ . '/../includes/funciones.php';
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
 $error = '';
+$ip = client_ip();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $correo = trim($_POST['correo'] ?? '');
   $pass = $_POST['password'] ?? '';
+  $bloqueo = login_bloqueo_restante($correo, $ip);
   if (!csrf_validar($_POST['csrf'] ?? '')) {
     $error = 'Sesión expirada. Recargue la página e intente de nuevo.';
   } elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL) || $pass === '') {
   $error = 'Ingrese un correo válido y su contraseña.';
-} elseif (($_SESSION['intentos'] ?? 0) >= 5 && time() - ($_SESSION['ultimo_fallo'] ?? 0) < 60) {
-$error = 'Demasiados intentos. Espere 1 minuto.';
+} elseif ($bloqueo > 0) {
+$error = 'Demasiados intentos. Espere ' . ceil($bloqueo / 60) . ' minuto(s).';
 } else {
 try {
   $db = getDB();
@@ -21,13 +23,13 @@ try {
   $st->execute([$correo]);
   $u = $st->fetch();
   if (!$u || !password_verify($pass, $u['password'])) {
-    $_SESSION['intentos'] = ($_SESSION['intentos'] ?? 0) + 1;
-    $_SESSION['ultimo_fallo'] = time();
+    login_registrar_fallo($correo, $ip);
     $error = 'Credenciales incorrectas.';
   } elseif ($u['estado'] !== 'activo') {
   $error = 'Usuario inactivo. Contacte al administrador.';
 } else {
-unset($_SESSION['intentos'], $_SESSION['ultimo_fallo']);
+login_limpiar_intentos($correo, $ip);
+login_purgar_registros();
 session_regenerate_id(true);
 $_SESSION['user_id'] = (int)$u['id_usuario'];
 $_SESSION['nombre'] = $u['nombre'];

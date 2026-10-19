@@ -228,6 +228,22 @@ descarta al terminar. Si necesitas capturarla de forma automática en el futuro,
 lugar correcto es el gestor de secretos del servidor (variables de entorno), no la
 base de datos del catálogo.
 
+### Protección contra fuerza bruta en el login
+
+El contador de intentos fallidos vive en la tabla `login_intentos` (clave: IP + correo),
+**no en la sesión**. Esto es importante: si el contador estuviera en la sesión, bastaría
+borrar la cookie para reiniciarlo y el ataque sería trivial.
+
+- 5 intentos fallidos bloquean la cuenta durante 1 minuto.
+- Si se sigue fallando, el bloqueo se alarga (2, 3… hasta un máximo de 15 minutos).
+- A los 20 intentos fallidos desde la misma IP (aunque sean cuentas distintas), esa IP
+  queda bloqueada 5 minutos: evita el barrido de muchas cuentas.
+- El contador se borra en cuanto el login es correcto, y los registros de más de un día
+  se purgan solos.
+
+Si instalaste el sistema con una base ya existente, aplica `migracion_v4.sql` para crear
+la tabla `login_intentos` (si no está, el sistema sigue funcionando pero sin el bloqueo).
+
 ## 13. Solución de problemas
 
 | Síntoma | Causa probable | Solución |
@@ -238,6 +254,7 @@ base de datos del catálogo.
 | Página en blanco / 404 | `BASE_URL` distinto a la carpeta | Iguala `BASE_URL` al nombre real en `htdocs` |
 | Login dice *Sesión expirada* | Token CSRF vencido | Recarga el login e intenta de nuevo |
 | Error 419 en formularios | Sesión caducada (30 min) | Vuelve a entrar |
+| Login dice *Demasiados intentos* | 5 fallos seguidos: bloqueo de 1 a 15 min | Espera a que expire el bloqueo |
 | Puerto 3306 ocupado | Otro MySQL instalado | MariaDB en 3307 + `DB_PORT='3307'` |
 | Archivo rechazado | >10 MB o extensión distinta | Sube `.csv` al módulo CSV y `.json` al JSON |
 

@@ -56,8 +56,8 @@ no esta en `http://localhost/sistema-metadata-management`.
 
 ## Criterios de aceptación
 - Sin referencias rotas (todas las rutas del sidebar abren).
-- Login rechaza clave mala, usuario inactivo y POST sin CSRF; bloquea tras 5 fallos.
+- Login rechaza clave mala, usuario inactivo y POST sin CSRF; bloquea en el servidor tras 5 fallos (el bloqueo no se reinicia al borrar la cookie).
 - PDO sin concatenar variables (revisar codigo).
 - Python funciona sin pip (solo stdlib).
 - Crawl de rutas: 20/20 sin errores.
-- Bateria automatizada: 22/22 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).
+- Bateria automatizada: 23/23 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).

@@ -185,15 +185,29 @@ check('pagina 404 responde 404', code == 404)
 html, code = get(opA, '/api/activos.php')
 check('API JSON responde con la sesion', code == 200 and '"ok":true' in html)
 
-print('\n== 9. Proteccion contra fuerza bruta ==')
-opX = sesion()
-html, _ = get(opX, '/public/login.php')
-for _ in range(6):
-    cuerpo, _, _ = post(opX, '/public/login.php', {
-        'correo': 'admin@demo.local', 'password': 'claveIncorrecta',
+print('\n== 9. Proteccion contra fuerza bruta (limite en el servidor) ==')
+# Se usa una cuenta que NO existe: el bloqueo no debe afectar a las cuentas reales.
+cuenta_prueba = 'qa_bloqueo@test.local'
+for _ in range(5):
+    opX = sesion()
+    html, _ = get(opX, '/public/login.php')
+    post(opX, '/public/login.php', {
+        'correo': cuenta_prueba, 'password': 'claveIncorrecta',
         'csrf': token_csrf(html)})
-    html = cuerpo
-check('bloquea tras varios intentos fallidos', 'intentos' in html.lower())
+# Sexto intento, en sesion nueva: debe seguir bloqueado.
+opY = sesion()
+html, _ = get(opY, '/public/login.php')
+cuerpo, _, _ = post(opY, '/public/login.php', {
+    'correo': cuenta_prueba, 'password': 'claveIncorrecta',
+    'csrf': token_csrf(html)})
+check('bloquea tras 5 intentos fallidos', 'intentos' in cuerpo.lower())
+# Otra sesion nueva = cookie borrada: el bloqueo vive en el servidor, no en la sesion.
+opZ = sesion()
+html, _ = get(opZ, '/public/login.php')
+cuerpo, _, _ = post(opZ, '/public/login.php', {
+    'correo': cuenta_prueba, 'password': 'claveIncorrecta',
+    'csrf': token_csrf(html)})
+check('el bloqueo sobrevive a borrar la cookie', 'intentos' in cuerpo.lower())
 
 print('\n' + '=' * 46)
 print('RESULTADO: %d OK, %d FALLAS' % (ok, fail))

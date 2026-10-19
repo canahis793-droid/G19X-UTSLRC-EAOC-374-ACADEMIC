@@ -212,6 +212,18 @@ CREATE TABLE bitacora (
   INDEX idx_bit_modulo (modulo)
 ) ENGINE=InnoDB;
 
+-- ---------------- Intentos de login (limite en el servidor) ----------------
+CREATE TABLE login_intentos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ip VARCHAR(45) NOT NULL,
+  correo VARCHAR(120) NOT NULL,
+  intentos INT NOT NULL DEFAULT 0,
+  bloqueado_hasta DATETIME DEFAULT NULL,
+  fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_login_ip_correo (ip, correo),
+  INDEX idx_login_fecha (fecha)
+) ENGINE=InnoDB;
+
 -- ---------------- Configuracion ----------------
 CREATE TABLE configuracion (
   clave VARCHAR(80) PRIMARY KEY,
