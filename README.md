@@ -92,11 +92,23 @@ C:\xampp\mysql\bin\mysql.exe -u root < C:\xampp\htdocs\sistema-metadata-manageme
 Edita `config/database.php`:
 ```php
 define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3306');      // cambia a 3307 si tu MariaDB usa ese puerto
+define('DB_PORT', '3306');      // valor por defecto de XAMPP
 define('DB_NAME', 'metadata_db');
 define('DB_USER', 'root');
 define('DB_PASS', '');          // tu clave de MySQL, si tiene
 ```
+
+### Si tu base de datos no está en el puerto 3306
+El repositorio deja **3306**, que es el puerto por defecto de XAMPP. Si el tuyo usa otro,
+cambia **solo** `DB_PORT` en `config/database.php`. Para saber en qué puerto trabaja
+tu MySQL/MariaDB:
+- XAMPP: abre el **Shell** de XAMPP y ejecuta `mysqladmin ping`; el puerto aparece en el log
+  (`xampp\mysql\bin\mysqld.exe --port=...` en `my.ini`, sección `[mysqld]`).
+- Si tu puerto no es 3306, queda así:
+```php
+define('DB_PORT', '3307');   // tu MariaDB escucha en 3307
+```
+Nada más cambia: la aplicación funciona igual en cualquier puerto.
 
 Edita `config/config.php` solo si hace falta:
 ```php

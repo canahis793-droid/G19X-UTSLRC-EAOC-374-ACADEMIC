@@ -12,3 +12,6 @@ __pycache__/
 Thumbs.db
 .DS_Store
 Desktop.ini
+
+# Ajustes locales de la base de datos (no se suben)
+/config/database.local.php
