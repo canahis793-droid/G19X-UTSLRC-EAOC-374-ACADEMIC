@@ -17,9 +17,11 @@ try {
   $puerto = (int)($_POST['puerto'] ?? 3306);
   if ($puerto < 1 || $puerto > 65535) throw new Exception('Puerto no valido.');
   // Anti-SSRF: el host debe ser publico (misma regla que la captura por API).
-  validar_host_publico($host);
+  // Se guarda la IP ya validada y se conecta con ella, no con el nombre original:
+  // asi el DNS no puede resolverse a una IP interna entre la validacion y la conexion.
+  $ip = validar_host_publico($host);
   // La contrasena solo se usa para abrir la conexion: no se guarda en ningun sitio.
-  $dsn = "mysql:host=$host;port=$puerto;dbname=$bdname;charset=utf8mb4";
+  $dsn = "mysql:host=$ip;port=$puerto;dbname=$bdname;charset=utf8mb4";
   $ext = new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
   $tablas = $ext->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=" . $ext->quote($bdname))->fetchAll(PDO::FETCH_COLUMN);
   if (!$tablas) throw new Exception("No se encontraron tablas en $bdname.");
