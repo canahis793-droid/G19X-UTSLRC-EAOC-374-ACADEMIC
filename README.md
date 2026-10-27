@@ -200,8 +200,8 @@ configuracion/   parámetros + test Python + tokens API (admin)
 api/             activos.php, fuentes.php, busqueda.php (sesión o ?token=)
 python/          extractor, clasificador, buscador, calidad, enriquecimiento, nlp_utils
 assets/          css/style.css, js/*.js, img/favicon.svg
-docs/            ARQUITECTURA, ENDPOINTS, MANUAL_USUARIO, PRUEBAS, PRD (+Word)
-tests/           crawl.py (20 rutas), aceptacion.py (22 pruebas), README.md
+docs/            ARQUITECTURA, ENDPOINTS, MANUAL_USUARIO, PRUEBAS, PRD (+Word), MVP
+tests/           crawl.py (20 rutas), aceptacion.py (23 pruebas), README.md
 uploads/         archivos subidos (protegido con .htaccess)
 database.sql     BD completa + datos (18 tablas) · migracion_v2/v3/v4.sql solo para bases viejas
 ```
