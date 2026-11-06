@@ -5,8 +5,10 @@ registra fuentes, captura activos automáticamente, documenta metadatos técnico
 negocio, sugiere categorías con Python, valida con humanos y permite encontrar todo con
 búsqueda inteligente. Con trazabilidad, calidad medida, reportes, bitácora y control por roles.
 
-**Stack:** PHP 8 + MySQL/MariaDB + Python 3 (solo librería estándar) + HTML5/CSS3/JS puro.
+**Stack:** PHP 8.2 + MySQL 8 / MariaDB 10.4 + Python 3 (solo librería estándar) + HTML5/CSS3/JS puro.
 Sin frameworks, sin nube, sin APIs de pago. Tema baby blue + morado, responsive.
+Probado en XAMPP con **PHP 8.2.12** y **MariaDB 10.4.32**; la búsqueda cumple
+`ONLY_FULL_GROUP_BY`, que MySQL 8 trae activo de fábrica.
 
 > **Uso de inteligencia artificial:** el desarrollo de este proyecto se apoyó en un
 > asistente de IA (IA generativa) para escribir y revisar código, documentación y
@@ -30,9 +32,10 @@ Sin frameworks, sin nube, sin APIs de pago. Tema baby blue + morado, responsive.
 8. [Entrar al sistema](#8-entrar-al-sistema)
 9. [Verificación rápida (5 minutos)](#9-verificación-rápida-5-minutos)
 10. [Estructura del proyecto](#10-estructura-del-proyecto)
-11. [Usuarios y roles](#11-usuarios-y-roles)
-12. [Seguridad de las capturas externas](#12-seguridad-de-las-capturas-externas)
-13. [Solución de problemas](#13-solución-de-problemas)
+11. [Correr las pruebas automatizadas](#11-correr-las-pruebas-automatizadas)
+12. [Usuarios y roles](#12-usuarios-y-roles)
+13. [Seguridad de las capturas externas](#13-seguridad-de-las-capturas-externas)
+14. [Solución de problemas](#14-solución-de-problemas)
 
 ---
 
@@ -114,25 +117,30 @@ aportan nada.
 
 ## 6. Configurar la aplicación
 
-Edita `config/database.php`:
+No edites `config/database.php`: ya trae los valores por defecto de XAMPP
+(`127.0.0.1`, puerto `3306`, usuario `root`, sin clave).
+
+Si tu MySQL/MariaDB usa otro puerto o tiene clave, crea `config/database.local.php`
+(git lo ignora) con **solo lo que cambia**:
 ```php
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3306');      // valor por defecto de XAMPP
-define('DB_NAME', 'metadata_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');          // tu clave de MySQL, si tiene
+<?php
+define('DB_PORT', '3307');
+define('DB_PASS', 'tu_clave');
 ```
+Ese archivo se carga antes que los valores por defecto y manda sobre ellos; lo que
+no definas sigue igual. `config/database.local.php` nunca se sube al repositorio.
 
 ### Si tu base de datos no está en el puerto 3306
 El repositorio deja **3306**, que es el puerto por defecto de XAMPP. Si el tuyo usa otro,
-cambia **solo** `DB_PORT` en `config/database.php`. Para saber en qué puerto trabaja
-tu MySQL/MariaDB:
-- XAMPP: abre el **Shell** de XAMPP y ejecuta `mysqladmin ping`; el puerto aparece en el log
-  (`xampp\mysql\bin\mysqld.exe --port=...` en `my.ini`, sección `[mysqld]`).
-- Si tu puerto no es 3306, queda así:
+crea `config/database.local.php` con **solo** el puerto:
 ```php
+<?php
 define('DB_PORT', '3307');   // tu MariaDB escucha en 3307
 ```
+Para saber en qué puerto trabaja tu MySQL/MariaDB:
+- XAMPP: abre el **Shell** de XAMPP y ejecuta `mysqladmin ping`; el puerto aparece en el log
+  (`xampp\mysql\bin\mysqld.exe --port=...` en `my.ini`, sección `[mysqld]`).
+
 Nada más cambia: la aplicación funciona igual en cualquier puerto.
 
 Edita `config/config.php` solo si hace falta:
@@ -211,20 +219,20 @@ database.sql     BD completa + datos (18 tablas) · migracion_v2/v3/v4.sql solo 
 Con la aplicacion ya servida por Apache:
 
 ```bash
-py tests/crawl.py        # 20 pantallas, busca errores de PHP/MySQL
+py tests/crawl.py        # 20 pantallas, busca errores de PHP
 py tests/aceptacion.py   # 23 pruebas funcionales de los flujos principales
 ```
 
 Solo usan la libreria estandar de Python. Detalle en `tests/README.md`.
 
-## 11. Usuarios y roles
+## 12. Usuarios y roles
 
 - **Administrador:** usuarios, fuentes, capturas, reportes, papelera, bitácora, configuración,
   tokens API. No puede eliminarse ni dejar al sistema sin admin (protegido).
 - **Data Steward:** activos, metadatos, capturas, clasificar, enriquecer, calidad, trazabilidad.
 - **Usuario:** dashboard, búsqueda, detalle, trazabilidad, reportes y exportaciones.
 
-## 12. Seguridad de las capturas externas
+## 13. Seguridad de las capturas externas
 
 Las capturas desde **MySQL** y desde **API** son peticiones que salen del servidor hacia
 otras máquinas. Para que alguien con permiso de captura no pueda usar el sistema para
@@ -269,7 +277,7 @@ Si instalaste el sistema con una base ya existente, aplica `migracion_v4.sql` pa
 la tabla `login_intentos` (si no está, el sistema sigue funcionando pero sin el bloqueo).
 En una instalación nueva no hace falta: `database.sql` ya la incluye.
 
-## 13. Solución de problemas
+## 14. Solución de problemas
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
