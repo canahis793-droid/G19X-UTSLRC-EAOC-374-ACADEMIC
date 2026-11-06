@@ -68,7 +68,9 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 - **Portabilidad:** `BASE_URL` y `DB_PORT` configurables; rutas 404 relativas.
 
 ## 7. Datos iniciales
-3 cuentas (admin/steward/consulta), 6 fuentes, 18 activos, metadatos/etiquetas/relaciones/calidad/clasificaciones de ejemplo. Migraciones versionadas (`database.sql`, `migracion_v2/v3.sql`).
+3 cuentas (admin/steward/consulta), 6 fuentes, 18 activos, metadatos/etiquetas/relaciones/calidad/clasificaciones de ejemplo. `database.sql` crea el esquema completo (18 tablas) y esos datos de una sola vez: es el único archivo necesario en una **instalación nueva**.
+
+Las migraciones versionadas existen solo para actualizar una base creada con una versión anterior del proyecto: `migracion_v2.sql` (nombres de usuario y activos adicionales), `migracion_v3.sql` (tokens API y papelera) y `migracion_v4.sql` (tabla `login_intentos` para el bloqueo de login en el servidor). No hacen falta si se parte de cero, porque `database.sql` ya incluye todo lo que ellas agregan.
 
 ## 8. Criterios de aceptación
 - Batería automatizada 23/23 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, API, fuerza bruta) + crawl 20/20 rutas sin errores (`tests/aceptacion.py`, `tests/crawl.py`).
@@ -76,7 +78,7 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 - `php -l` limpio, Python solo-stdlib compilado.
 
 ## 9. Fuera de alcance v1.0
-SSO/LDAP, multi-idioma, conectores empresariales propietarios, tiempo real, app móvil, roles personalizables por UI.
+SSO/LDAP, multi-idioma, conectores empresariales propietarios, tiempo real, app móvil, roles personalizables por UI, **escritura en la API** (hoy es de solo lectura) y **webhooks**. Es alcance decidido, no un defecto; cada punto tiene su versión prevista en el roadmap (§10).
 
 ## 10. Roadmap sugerido
 v1.1 limpieza programada de uploads + alertas de calidad; v1.2 roles configurables + papelera con expiración; v2.0 API write + webhooks.
