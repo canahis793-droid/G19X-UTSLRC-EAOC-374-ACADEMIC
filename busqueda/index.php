@@ -12,7 +12,7 @@ $resultados = [];
 $info = '';
 // Historial: top global + mis recientes (desde bitacora)
 $topBusq = $db->query("SELECT REPLACE(descripcion,'Busco: ','') AS q, COUNT(*) c FROM bitacora WHERE modulo='busqueda' AND accion='busqueda' GROUP BY q ORDER BY c DESC LIMIT 6")->fetchAll();
-$misBusq = $db->prepare("SELECT DISTINCT REPLACE(descripcion,'Busco: ','') AS q FROM bitacora WHERE modulo='busqueda' AND accion='busqueda' AND id_usuario=? ORDER BY fecha DESC LIMIT 5");
+$misBusq = $db->prepare("SELECT REPLACE(descripcion,'Busco: ','') AS q FROM bitacora WHERE modulo='busqueda' AND accion='busqueda' AND id_usuario=? GROUP BY q ORDER BY MAX(fecha) DESC LIMIT 5");
 $misBusq->execute([$_SESSION['user_id']]);
 $misBusq = array_column($misBusq->fetchAll(), 'q');
 if ($q !== '') {
