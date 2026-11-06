@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../includes/funciones.php';
 http_response_code(404);
 ?>
 <!DOCTYPE html>

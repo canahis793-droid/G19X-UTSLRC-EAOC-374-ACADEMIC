@@ -37,8 +37,8 @@ function nav_act($seccion) {
   <a class="<?= nav_act('activos') ?>" href="<?= e(base_url('public/index.php?p=activos')) ?>"> Catálogo de activos</a>
 <a class="<?= nav_act('fuentes') ?>" href="<?= e(base_url('public/index.php?p=fuentes')) ?>"> Fuentes</a>
 <a class="<?= nav_act('metadatos') ?>" href="<?= e(base_url('public/index.php?p=metadatos')) ?>"> Metadatos</a>
-<a class="<?= nav_act('captura') ?>" href="<?= e(base_url('public/index.php?p=captura')) ?>"> Captura automática</a>
 <?php if (in_array($rol, ['administrador','steward'])): ?>
+  <a class="<?= nav_act('captura') ?>" href="<?= e(base_url('public/index.php?p=captura')) ?>"> Captura automática</a>
   <a class="<?= nav_act('clasificacion') ?>" href="<?= e(base_url('public/index.php?p=clasificacion')) ?>"> Clasificación</a>
 <a class="<?= nav_act('enriquecimiento') ?>" href="<?= e(base_url('public/index.php?p=enriquecimiento')) ?>"> Enriquecimiento</a>
 <a class="<?= nav_act('calidad') ?>" href="<?= e(base_url('public/index.php?p=calidad')) ?>"> Calidad</a>
