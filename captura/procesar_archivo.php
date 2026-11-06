@@ -52,6 +52,10 @@ $db->prepare("UPDATE fuentes SET fecha_ultima_sincronizacion=NOW() WHERE id_fuen
 registrar_bitacora('captura_'.$tipo,'captura',"Archivo $orig -> activo $idAct");
 flash_set('ok',"Archivo analizado con Python. Activo creado: $nombreActivo");
 redirect(base_url('public/index.php?p=activos/detalle&id='.$idAct));
+} catch (PDOException $ex) {
+  error_log('captura/archivo: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo procesar el archivo. Intente de nuevo.');
+  redirect(base_url('public/index.php?p=captura'));
 } catch (Exception $ex) {
 flash_set('error','Error: '.$ex->getMessage());
 redirect(base_url('public/index.php?p=captura'));

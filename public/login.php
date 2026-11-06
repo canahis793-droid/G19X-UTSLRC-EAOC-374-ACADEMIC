@@ -40,7 +40,8 @@ registrar_bitacora('login', 'auth', 'Inicio de sesion exitoso');
 redirect(base_url('public/index.php?p=dashboard'));
 }
 } catch (Exception $ex) {
-$error = 'Error de conexión: ' . $ex->getMessage();
+  error_log('login: ' . $ex->getMessage());
+  $error = 'No se pudo conectar con la base de datos. Intente más tarde.';
 }
 }
 }

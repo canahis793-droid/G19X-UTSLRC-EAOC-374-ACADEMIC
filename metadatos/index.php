@@ -44,6 +44,9 @@ $db->prepare("DELETE FROM metadatos WHERE id_metadato=?")->execute([(int)$_POST[
 registrar_bitacora('eliminar_metadato','metadatos','Elimino metadato id='.(int)$_POST['id_metadato']);
 flash_set('ok','Metadato eliminado.');
 }
+} catch (PDOException $ex) {
+  error_log('metadatos: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo guardar el metadato. Intente de nuevo.');
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 redirect(base_url('public/index.php?p=metadatos&activo='.(int)($_POST['id_activo'] ?? $_GET['activo'] ?? 0)));
 }

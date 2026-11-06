@@ -29,7 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     registrar_bitacora('crear_activo','activos',"Creo activo $nombre id=$id");
     flash_set('ok','Activo creado. Se generó clasificación sugerida con Python.');
     redirect(base_url('public/index.php?p=activos/detalle&id='.$id));
-  } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
+  } catch (PDOException $ex) {
+  error_log('activos/crear: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo crear el activo. Intente de nuevo.');
+} catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 }
 $fuentes = $db->query("SELECT * FROM fuentes WHERE estado='activo' ORDER BY nombre")->fetchAll();
 include __DIR__ . '/../includes/header.php';

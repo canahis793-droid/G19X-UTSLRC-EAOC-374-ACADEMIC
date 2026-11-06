@@ -46,6 +46,9 @@ $db->prepare("DELETE FROM fuentes WHERE id_fuente=?")->execute([$id]);
 registrar_bitacora('eliminar_fuente','fuentes',"Elimino fuente id=$id (a papelera)");
 flash_set('ok','Fuente eliminada (puedes restaurarla en Papelera).');
 }
+} catch (PDOException $ex) {
+  error_log('fuentes: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo guardar el cambio. Intente de nuevo.');
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 redirect(base_url('public/index.php?p=fuentes'));
 }

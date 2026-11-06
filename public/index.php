@@ -35,4 +35,12 @@ if (!array_key_exists($p, $rutas)) {
     require __DIR__ . '/404.php';
     exit;
 }
-require __DIR__ . '/../' . $rutas[$p];
+try {
+    require __DIR__ . '/../' . $rutas[$p];
+} catch (Throwable $ex) {
+    error_log('app: ' . get_class($ex) . ': ' . $ex->getMessage());
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
+    require __DIR__ . '/500.php';
+}

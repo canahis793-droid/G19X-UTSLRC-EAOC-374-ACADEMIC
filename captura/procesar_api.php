@@ -39,6 +39,10 @@ $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,to
 registrar_bitacora('captura_api','captura',"API $url -> activo $idAct");
 flash_set('ok','API registrada correctamente.');
 redirect(base_url('public/index.php?p=activos/detalle&id='.$idAct));
+} catch (PDOException $ex) {
+  error_log('captura/api: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo registrar la API. Intente de nuevo.');
+  redirect(base_url('public/index.php?p=captura'));
 } catch (Exception $ex) {
 flash_set('error','Error: '.$ex->getMessage());
 redirect(base_url('public/index.php?p=captura'));

@@ -36,6 +36,7 @@ Probado en XAMPP con **PHP 8.2.12** y **MariaDB 10.4.32**; la búsqueda cumple
 12. [Usuarios y roles](#12-usuarios-y-roles)
 13. [Seguridad de las capturas externas](#13-seguridad-de-las-capturas-externas)
 14. [Solución de problemas](#14-solución-de-problemas)
+15. [Puesta en producción](#15-puesta-en-producción)
 
 ---
 
@@ -281,7 +282,8 @@ En una instalación nueva no hace falta: `database.sql` ya la incluye.
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
-| `SQLSTATE[HY000] [1045]` | Usuario/clave MySQL mal | Revisa `config/database.php` |
+| `SQLSTATE[HY000] [1045]` en el log | Usuario/clave MySQL mal | Revisa `config/database.local.php` |
+| Login: «No se pudo conectar con la base de datos» | MySQL detenido o mal configurado | Arranca MySQL y revisa el detalle en el log de Apache |
 | `Unknown database` | No importaste el SQL | Repite el paso 5 |
 | `No se encontró Python` | `PYTHON_CMD` mal | `py` en Windows, `python3` en Linux; usa *Probar conexión* |
 | Página en blanco / 404 | `BASE_URL` distinto a la carpeta | Iguala `BASE_URL` al nombre real en `htdocs` |
@@ -290,6 +292,24 @@ En una instalación nueva no hace falta: `database.sql` ya la incluye.
 | Login dice *Demasiados intentos* | 5 fallos seguidos: bloqueo de 1 a 15 min | Espera a que expire el bloqueo |
 | Puerto 3306 ocupado | Otro MySQL instalado | MariaDB en 3307 + `DB_PORT='3307'` |
 | Archivo rechazado | >10 MB o extensión distinta | Sube `.csv` al módulo CSV y `.json` al JSON |
+
+## 15. Puesta en producción
+
+En el servidor final, apaga la visualización de errores de PHP para que nunca se
+muestre al usuario una ruta, una traza o un mensaje de la base:
+
+```ini
+; php.ini
+display_errors = Off
+log_errors = On
+error_log = "C:\xampp\apache\logs\error.log"
+```
+
+El sistema ya muestra mensajes fijos ante fallos de base («No se pudo conectar con
+la base de datos. Intente más tarde.») y guarda el detalle técnico en el log. Las
+validaciones propias de los formularios (campo obligatorio, contraseña corta,
+URL inválida) sí muestran su texto, porque no exponen información del servidor.
+Reinicia Apache después de cambiar `php.ini`.
 
 ---
 

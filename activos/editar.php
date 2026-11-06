@@ -38,6 +38,9 @@ try {
 registrar_bitacora('editar_activo','activos',"Edito activo id=$id");
 flash_set('ok','Activo actualizado.');
 redirect(base_url('public/index.php?p=activos/detalle&id='.$id));
+} catch (PDOException $ex) {
+  error_log('activos/editar: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo actualizar el activo. Intente de nuevo.');
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 }
 $fuentes = $db->query("SELECT * FROM fuentes ORDER BY nombre")->fetchAll();

@@ -54,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 registrar_bitacora('editar_usuario', 'usuarios', "Edito usuario id=$id");
 flash_set('ok', 'Usuario actualizado.');
 }
+} catch (PDOException $ex) {
+  error_log('usuarios: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo guardar el usuario. Intente de nuevo.');
 } catch (Exception $ex) { flash_set('error', 'Error: ' . $ex->getMessage()); }
 }
 redirect(base_url('public/index.php?p=usuarios'));

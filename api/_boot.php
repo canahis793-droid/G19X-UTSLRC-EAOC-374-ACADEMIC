@@ -15,7 +15,15 @@ if (!$apiUser && empty($_SESSION['user_id'])) {
   exit;
 }
 
-$db = getDB();
+$db = null;
+try {
+  $db = getDB();
+} catch (PDOException $ex) {
+  error_log('api: ' . $ex->getMessage());
+  http_response_code(500);
+  echo json_encode(['ok' => false, 'error' => 'Error interno del servidor.']);
+  exit;
+}
 
 function api_ok($data) {
   echo json_encode(['ok' => true, 'data' => $data], JSON_UNESCAPED_UNICODE);

@@ -11,4 +11,7 @@ try {
   $st = $db->query("SELECT a.id_activo AS id, a.nombre, a.descripcion, a.categoria, a.tipo_activo AS tipo, f.nombre AS fuente FROM activos a JOIN fuentes f ON f.id_fuente=a.id_fuente LIMIT 100");
 }
 api_ok($st->fetchAll());
+} catch (PDOException $ex) {
+  error_log('api/activos: ' . $ex->getMessage());
+  api_error('Error interno del servidor.', 500);
 } catch (Exception $ex) { api_error($ex->getMessage()); }

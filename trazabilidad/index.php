@@ -16,7 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && puede_editar()) {
     $db->prepare("INSERT INTO relaciones_activos (id_origen,id_destino,tipo_relacion,descripcion) VALUES (?,?,?,?)")->execute([$o,$d,$tipo,$desc]);
     registrar_bitacora('crear_relacion','trazabilidad',"Relacion $o -> $d ($tipo)");
     flash_set('ok','Relación creada.');
-  } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
+  } catch (PDOException $ex) {
+  error_log('trazabilidad: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo guardar la relación. Intente de nuevo.');
+} catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 redirect(base_url('public/index.php?p=trazabilidad'));
 }
 if (!empty($_GET['eliminar']) && es_admin()) {

@@ -61,6 +61,9 @@ redirect(base_url('public/index.php?p=papelera'));
 $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([$id]);
 registrar_bitacora('restaurar', 'papelera', "Restauro {$item['tipo']} {$item['nombre']}");
 flash_set('ok', 'Restaurado correctamente.');
+} catch (PDOException $ex) {
+  error_log('papelera: ' . $ex->getMessage());
+  flash_set('error', 'No se pudo restaurar el elemento. Intente de nuevo.');
 } catch (Exception $ex) { flash_set('error', 'Error: ' . $ex->getMessage()); }
 redirect(base_url('public/index.php?p=papelera'));
 }

@@ -52,6 +52,10 @@ $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,to
 ->execute([$id_fuente,$_SESSION['user_id'],'mysql',"Captura MySQL $bdname@$host: $total tablas nuevas.",$total,'exitoso']);
 registrar_bitacora('captura_mysql','captura',"MySQL $bdname: $total activos");
 flash_set('ok',"Captura MySQL exitosa: $total tablas nuevas.");
+} catch (PDOException $ex) {
+  error_log('captura/mysql: ' . $ex->getMessage());
+  try { $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,total_activos,estado) VALUES (?,?,?,?,?,?)")->execute([$id_fuente ?: null,$_SESSION['user_id'],'mysql','No se pudo conectar con el servidor indicado',0,'fallido']); } catch (Exception $e2) {}
+  flash_set('error', 'No se pudo completar la captura. Intente de nuevo.');
 } catch (Exception $ex) {
 try { $db->prepare("INSERT INTO procesos_captura (id_fuente,id_usuario,tipo,detalle,total_activos,estado) VALUES (?,?,?,?,?,?)")->execute([$id_fuente ?: null,$_SESSION['user_id'],'mysql','Error: '.$ex->getMessage(),0,'fallido']); } catch (Exception $e2) {}
 flash_set('error','Error captura MySQL: '.$ex->getMessage());
