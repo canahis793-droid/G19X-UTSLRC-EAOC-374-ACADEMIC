@@ -8,7 +8,7 @@ requerir_admin();
 $titulo = 'Configuración';
 $descripcion = 'Ajustes generales del sistema.';
 $db = getDB();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cfg'])) {
   $validas = array_column($db->query("SELECT clave FROM configuracion")->fetchAll(), 'clave');
   foreach (($_POST['cfg'] ?? []) as $k => $v) {
     if (!in_array($k, $validas, true)) continue; // sin claves arbitrarias
