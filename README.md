@@ -212,7 +212,7 @@ Con la aplicacion ya servida por Apache:
 
 ```bash
 py tests/crawl.py        # 20 pantallas, busca errores de PHP/MySQL
-py tests/aceptacion.py   # 22 pruebas funcionales de los flujos principales
+py tests/aceptacion.py   # 23 pruebas funcionales de los flujos principales
 ```
 
 Solo usan la libreria estandar de Python. Detalle en `tests/README.md`.

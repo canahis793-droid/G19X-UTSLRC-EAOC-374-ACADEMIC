@@ -46,8 +46,8 @@ Deben imprimir JSON con `ok:true`. Si no, revisa `python_path` en Configuración
 Viven en `tests/` y se ejecutan contra la aplicacion ya servida por Apache.
 
 ```bash
-py tests/crawl.py        # recorre las 20 pantallas y busca errores de PHP/MySQL
-py tests/aceptacion.py   # 22 pruebas funcionales de los flujos principales
+py tests/crawl.py        # recorre las 20 pantallas y busca errores de PHP
+py tests/aceptacion.py   # 23 pruebas funcionales de los flujos principales
 ```
 
 Ambos usan solo la libreria estandar de Python. Aceptan `--url` si la aplicacion
@@ -61,3 +61,25 @@ no esta en `http://localhost/sistema-metadata-management`.
 - Python funciona sin pip (solo stdlib).
 - Crawl de rutas: 20/20 sin errores.
 - Bateria automatizada: 23/23 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).
+
+## Última ejecución — 6-nov-2026 · commit e1d8294
+
+Base `metadata_db` recién importada desde `database.sql` (18 tablas, 3 usuarios,
+6 fuentes, 18 activos, 32 metadatos). Servidor: XAMPP, Apache en el puerto 80 y
+MariaDB en el 3307.
+
+```
+> py tests/crawl.py
+...
+rutas revisadas: 20
+rutas con problema: 0
+
+> py tests/aceptacion.py
+...
+== 9. Proteccion contra fuerza bruta (limite en el servidor) ==
+  OK    bloquea tras 5 intentos fallidos
+  OK    el bloqueo sobrevive a borrar la cookie
+
+==============================================
+RESULTADO: 23 OK, 0 FALLAS
+```

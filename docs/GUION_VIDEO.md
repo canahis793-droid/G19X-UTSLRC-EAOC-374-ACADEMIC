@@ -74,7 +74,7 @@ Voz en off + acción en pantalla. Tiempos orientativos; practice antes de grabar
 
 **PANTALLA:** volver al dashboard; pantalla con el nombre del proyecto y GitHub.
 
-**VOZ:** "Para resumir: un solo lugar donde ver, entender y medir los datos de una empresa. Sin servicios de pago y sin IA en la nube: **PHP, MySQL y Python con librería estándar**. El sistema está terminado, documentado, probado con veintidós pruebas automatizadas y subido a GitHub. Gracias por su atención."
+**VOZ:** "Para resumir: un solo lugar donde ver, entender y medir los datos de una empresa. Sin servicios de pago y sin IA en la nube: **PHP, MySQL y Python con librería estándar**. El sistema está terminado, documentado, probado con veintitrés pruebas automatizadas y subido a GitHub. Gracias por su atención."
 
 ---
 

@@ -25,8 +25,12 @@ py tests/aceptacion.py --url http://localhost/mi-carpeta
 
 ### `tests/crawl.py` — recorrido de pantallas
 Entra como administrador y abre las 20 pantallas del sistema. Falla si alguna
-devuelve un codigo distinto de 200 o si la pagina contiene un error de PHP o de
-MySQL (Fatal error, Warning, SQLSTATE, Uncaught...).
+devuelve un codigo distinto de 200 o si la pagina contiene un error del motor PHP
+(`Fatal error`, `Parse error`, `Warning:`, `Notice:`, `Deprecated:`, `Uncaught`,
+`Call to undefined`).
+
+No busca `SQLSTATE` a proposito: el historial de capturas muestra los errores de
+intentos anteriores como informacion legitima, y buscarlo daba falsos positivos.
 
 Salida esperada:
 ```
@@ -35,7 +39,7 @@ rutas con problema: 0
 ```
 
 ### `tests/aceptacion.py` — flujos funcionales
-Ejecuta 22 comprobaciones:
+Ejecuta 23 comprobaciones:
 
 | Bloque | Comprueba |
 |---|---|
@@ -47,9 +51,9 @@ Ejecuta 22 comprobaciones:
 | 6. Calidad | evaluacion masiva y promedio visible |
 | 7. Trazabilidad | crea una relacion y la elimina |
 | 8. Reportes | export CSV, bitacora, test de Python, 404, API JSON |
-| 9. Seguridad | bloqueo tras varios intentos fallidos de login |
+| 9. Seguridad | bloqueo tras 5 intentos fallidos y bloqueo que sobrevive a borrar la cookie |
 
-Salida esperada: `RESULTADO: 22 OK, 0 FALLAS`.
+Salida esperada: `RESULTADO: 23 OK, 0 FALLAS`.
 
 La prueba **crea y elimina sus propios datos** (fuente de prueba, CSV de prueba y
 su activo, relacion de prueba). Si se interrumpe a la mitad, se limpian a mano

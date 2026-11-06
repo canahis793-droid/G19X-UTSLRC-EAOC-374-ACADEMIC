@@ -65,5 +65,5 @@ Si los 10 pasos salen, la app está **100% operativa**.
 
 ## 5. Estado del proyecto
 
-Terminado y verificado: lint PHP/JS/Python limpio, 19/19 rutas OK, batería funcional
-22/22 OK, base con datos empresariales de ejemplo. Detalle de pruebas en `PRUEBAS.md`.
+Terminado y verificado: lint PHP/JS/Python limpio, 20/20 rutas OK, batería funcional
+23/23 OK, base con datos empresariales de ejemplo. Detalle de pruebas en `PRUEBAS.md`.
