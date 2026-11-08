@@ -27,9 +27,17 @@ document.addEventListener('click', e => {
 
 /* 3. Estado de carga en submits (evita doble clic) */
 document.querySelectorAll('form').forEach(f => {
-  f.addEventListener('submit', () => {
-    const btn = f.querySelector('button[type="submit"], .btn-primary');
-    if (btn && !btn.dataset.noload) { btn.classList.add('loading'); btn.disabled = true; }
+  f.addEventListener('submit', e => {
+    const btn = e.submitter || f.querySelector('button[type="submit"], .btn-primary');
+    if (!btn || btn.dataset.noload) return;
+    // Un boton deshabilitado no envia su name/value: se copia a un hidden
+    // para que el servidor reciba accion=validar / accion=aceptar.
+    if (btn.name) {
+      const h = document.createElement('input');
+      h.type = 'hidden'; h.name = btn.name; h.value = btn.value;
+      f.appendChild(h);
+    }
+    btn.classList.add('loading'); btn.disabled = true;
   });
 });
 

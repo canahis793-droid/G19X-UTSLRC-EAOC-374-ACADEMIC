@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     registrar_bitacora('aceptar_enriquecimiento','enriquecimiento',"Acepto sugerencia id=$ide");
     flash_set('ok','Sugerencia aceptada y aplicada.');
-  } else {
+  } elseif ($acc === 'rechazar') {
   $db->prepare("UPDATE enriquecimientos SET estado='rechazado' WHERE id_enriquecimiento=?")->execute([$ide]);
   flash_set('ok','Sugerencia rechazada.');
 }

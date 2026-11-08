@@ -141,9 +141,26 @@ m = re.search(r'detalle&id=(\d+)', url)
 check('el activo creado muestra sus metadatos', bool(m) and 'Metadato' in cuerpo)
 
 print('\n== 4. Clasificacion asistida ==')
-post(opA, R + 'clasificacion&analizar=todos', {})
-html, _ = get(opA, R + 'clasificacion')
+get(opA, R + 'clasificacion&analizar=todos')
+html, _ = get(opS, R + 'clasificacion')
 check('pagina de clasificacion operativa', 'Pendiente' in html or 'Historial' in html)
+check('el analisis masivo deja sugerencias pendientes', 'value="validar"' in html)
+m = re.search(r'<tr><td><strong>(.*?)</strong></td>.*?name="id_clasificacion" value="(\d+)"',
+              html, re.S)
+if m:
+    activo_qa, id_clas = m.group(1), m.group(2)
+    cuerpo, _, _ = post(opS, R + 'clasificacion', {
+        'accion': 'validar', 'id_clasificacion': id_clas,
+        'categoria_final': 'Venta', 'csrf': token_csrf(html)})
+    check('validar aplica la categoria elegida', 'validada y aplicada' in cuerpo)
+    html, _ = get(opS, R + 'clasificacion')
+    fila = re.search(r'<tr><td>' + re.escape(activo_qa) +
+                     r'</td><td>.*?</td><td>Venta</td>'
+                     r'<td><span class="badge ok">validada</span></td></tr>', html, re.S)
+    check('la fila pasa al historial como validada', bool(fila))
+else:
+    check('validar aplica la categoria elegida', False)
+    check('la fila pasa al historial como validada', False)
 
 print('\n== 5. Busqueda inteligente ==')
 html, _ = get(opU, R + 'busqueda&q=' + urllib.parse.quote('informacion de compradores'))

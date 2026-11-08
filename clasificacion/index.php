@@ -38,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($accion === 'validar') {
       $final = $_POST['categoria_final'] ?? $c['categoria_sugerida'];
       if (!in_array($final, $cats, true)) $final = $c['categoria_sugerida'];
-      $final = $_POST['categoria_final'] ?? $c['categoria_sugerida'];
       $db->prepare("UPDATE clasificaciones SET categoria_final=?, estado='validada' WHERE id_clasificacion=?")->execute([$final,$idc]);
       $db->prepare("UPDATE activos SET categoria=?, estado='activo', fecha_actualizacion=NOW() WHERE id_activo=?")->execute([$final,$c['id_activo']]);
       registrar_bitacora('validar_clasificacion','clasificacion',"Valido id=$idc final=$final");
