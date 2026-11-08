@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/permisos.php';
 $titulo = 'Trazabilidad y relaciones';
 $descripcion = 'Descubre cómo se conectan tus activos.';
 $db = getDB();
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && puede_editar()) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && puede_editar() && empty($_POST['eliminar'])) {
   $o = (int)$_POST['id_origen']; $d = (int)$_POST['id_destino'];
   $tipo = trim($_POST['tipo_relacion'] ?? 'relacionado');
   $desc = trim($_POST['descripcion'] ?? '');
@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && puede_editar()) {
 } catch (Exception $ex) { flash_set('error','Error: '.$ex->getMessage()); }
 redirect(base_url('public/index.php?p=trazabilidad'));
 }
-if (!empty($_GET['eliminar']) && es_admin()) {
-  $db->prepare("DELETE FROM relaciones_activos WHERE id_relacion=?")->execute([(int)$_GET['eliminar']]);
-  registrar_bitacora('eliminar_relacion','trazabilidad','Elimino relacion id='.(int)$_GET['eliminar']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['eliminar']) && es_admin()) {
+  $db->prepare("DELETE FROM relaciones_activos WHERE id_relacion=?")->execute([(int)$_POST['eliminar']]);
+  registrar_bitacora('eliminar_relacion','trazabilidad','Elimino relacion id='.(int)$_POST['eliminar']);
   flash_set('ok','Relación eliminada.');
   redirect(base_url('public/index.php?p=trazabilidad'));
 }
@@ -51,7 +51,7 @@ include __DIR__ . '/../includes/header.php';
 <div class="card"><h3>Relaciones (<?= count($rels) ?>)</h3>
   <table class="table"><thead><tr><th>Origen</th><th></th><th>Destino</th><th>Tipo</th><th>Descripción</th><?php if(es_admin()): ?><th></th><?php endif; ?></tr></thead><tbody>
       <?php foreach ($rels as $r): ?><tr><td><strong><?= e($r['origen']) ?></strong></td><td>→</td><td><?= e($r['destino']) ?></td><td><span class="badge"><?= e($r['tipo_relacion']) ?></span></td><td><?= e($r['descripcion']) ?></td>
-          <?php if(es_admin()): ?><td><a class="btn btn-sm danger" data-confirm="¿Eliminar?" href="?p=trazabilidad&eliminar=<?= $r['id_relacion'] ?>">Eliminar</a></td><?php endif; ?></tr><?php endforeach; ?>
+          <?php if(es_admin()): ?><td><form method="post" data-confirm="¿Eliminar la relación?"><?= csrf_field() ?><input type="hidden" name="eliminar" value="<?= (int)$r['id_relacion'] ?>"><button class="btn btn-sm danger">Eliminar</button></form></td><?php endif; ?></tr><?php endforeach; ?>
   </tbody></table></div>
 <script>window.__rels = <?= json_encode($rels, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
 <script src="<?= e(base_url('assets/js/trazabilidad.js')) ?>"></script>

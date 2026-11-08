@@ -12,8 +12,8 @@ $fuentes = $db->query("SELECT * FROM fuentes WHERE estado='activo' ORDER BY nomb
 $procesos = $db->query("SELECT p.*, f.nombre AS fuente, u.nombre AS usuario FROM procesos_captura p LEFT JOIN fuentes f ON f.id_fuente=p.id_fuente LEFT JOIN usuarios u ON u.id_usuario=p.id_usuario ORDER BY p.fecha_ejecucion DESC LIMIT 20")->fetchAll();
 
 // Gestion de archivos subidos
-if (!empty($_GET['borrar_arch']) && puede_editar()) {
-  $f = basename($_GET['borrar_arch']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['borrar_arch']) && puede_editar()) {
+  $f = basename($_POST['borrar_arch']);
   $path = rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR . $f;
   if (is_file($path) && !in_array($f, ['.htaccess', '.gitkeep'], true)) {
     @unlink($path);
@@ -22,7 +22,7 @@ if (!empty($_GET['borrar_arch']) && puede_editar()) {
   }
 redirect(base_url('public/index.php?p=captura'));
 }
-if (!empty($_GET['purgar']) && es_admin()) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['purgar']) && es_admin()) {
   $n = 0;
   foreach (glob(rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR . '*') as $path) {
     $f = basename($path);
@@ -103,10 +103,10 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="card">
   <div class="card-head"><h3> Archivos subidos (<?= count($archivos) ?>)</h3>
-    <?php if (es_admin() && $archivos): ?><a class="btn btn-sm" data-confirm="¿Borrar archivos de más de 30 días?" href="?p=captura&purgar=1"> Purgar +30 días</a><?php endif; ?></div>
+    <?php if (es_admin() && $archivos): ?><form method="post" data-confirm="¿Borrar archivos de más de 30 días?" style="display:inline"><?= csrf_field() ?><input type="hidden" name="purgar" value="1"><button class="btn btn-sm">Purgar +30 días</button></form><?php endif; ?></div>
   <table class="table"><thead><tr><th>Archivo</th><th>Tamaño</th><th>Subido</th><th></th></tr></thead><tbody>
       <?php foreach ($archivos as $a): ?><tr><td><?= e($a['nombre']) ?></td><td><?= e($a['kb']) ?> KB</td><td><small><?= e($a['fecha']) ?></small></td>
-          <td><a class="btn btn-sm danger" data-confirm="¿Borrar archivo?" href="?p=captura&borrar_arch=<?= urlencode($a['nombre']) ?>">Borrar</a></td></tr><?php endforeach; ?>
+          <td><form method="post" data-confirm="¿Borrar archivo?" style="display:inline"><?= csrf_field() ?><input type="hidden" name="borrar_arch" value="<?= e($a['nombre']) ?>"><button class="btn btn-sm danger">Borrar</button></form></td></tr><?php endforeach; ?>
   </tbody></table>
 </div>
 

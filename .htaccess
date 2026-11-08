@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^$ public/index.php [L]
+RewriteRule ^index\.php$ - [L]
+RewriteRule ^(public|assets|api)/ - [L]
+RewriteRule ^ - [F]

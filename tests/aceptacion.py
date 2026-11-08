@@ -179,9 +179,10 @@ post(opA, R + 'trazabilidad', {
     'descripcion': 'QA aceptacion', 'csrf': token_csrf(html)})
 html, _ = get(opA, R + 'trazabilidad')
 check('relacion registrada', 'QA aceptacion' in html)
-m = re.search(r'eliminar=(\d+)', html)
+m = re.search(r'QA aceptacion.*?name="eliminar" value="(\d+)"', html, re.S)
 if m:
-    get(opA, R + 'trazabilidad&eliminar=' + m.group(1))
+    post(opA, R + 'trazabilidad', {
+        'eliminar': m.group(1), 'csrf': token_csrf(html)})
     html, _ = get(opA, R + 'trazabilidad')
     check('relacion eliminada', 'QA aceptacion' not in html)
 else:

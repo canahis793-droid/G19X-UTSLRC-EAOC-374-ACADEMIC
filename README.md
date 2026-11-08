@@ -243,7 +243,15 @@ función `validar_host_publico()` de `includes/funciones.php`:
 - Solo se aceptan hosts públicos: bloquea `localhost`, loopback (`127.x`, `::1`),
   redes privadas (`10.x`, `172.16-31.x`, `192.168.x`), enlace local (`169.254.x`)
   y direcciones IPv6 internas.
-- Se valida el **puerto** (1–65535) y el **nombre de la base** (solo caracteres seguros).
+- En hosts con IPv4 mapeada en IPv6 (`::ffff:127.0.0.1`) se extrae y valida la IPv4 interna.
+- La validación usa `FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE` (sin lista manual).
+- Se valida el **puerto** (1-65535) y el **nombre de la base** (solo caracteres seguros).
+- La captura por **API** descarga contra la IP validada (cURL con `CURLOPT_RESOLVE`) y con
+  `CURLOPT_FOLLOWLOCATION` / `follow_location` en `0`: no sigue redirecciones, para evitar que
+  una URL pública redirija a un servicio interno y su contenido se guarde como metadato.
+- `.htaccess` en la raíz (Apache 2.4) redirige la raíz a `public/index.php`, deja pasar solo
+  `public/` y `assets/`, y devuelve 403 al resto: evita exponer `database.sql`, `tests/`,
+  `python/`, `docs/`, `config/` y otros archivos internos por HTTP.
 
 Si necesitas capturar desde tu propio `localhost` durante una demostración, activa
 `CAPTURA_PERMITE_LOCAL` en `config/config.php` (ponlo en `true`) y vuelve a `false`
@@ -294,6 +302,12 @@ En una instalación nueva no hace falta: `database.sql` ya la incluye.
 | Archivo rechazado | >10 MB o extensión distinta | Sube `.csv` al módulo CSV y `.json` al JSON |
 
 ## 15. Puesta en producción
+
+Además de apagar `display_errors`, verifica en el servidor:
+
+- **mod_rewrite activo**: el `.htaccess` de la raíz depende de él (XAMPP lo trae activo).
+- **python_path**: en Configuración solo se acepta `py`, `python`, `python3` o una ruta de
+  archivo existente; valores arbitrarios se rechazan para evitar ejecución de comandos.
 
 En el servidor final, apaga la visualización de errores de PHP para que nunca se
 muestre al usuario una ruta, una traza o un mensaje de la base:

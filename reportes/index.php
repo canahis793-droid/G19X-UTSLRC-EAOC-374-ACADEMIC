@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['op'] ?? '') === 'guardar')
   }
 redirect(base_url('public/index.php?p=reportes'));
 }
-if (!empty($_GET['eliminar_rep']) && es_admin()) {
-  $db->prepare("DELETE FROM reportes_guardados WHERE id_reporte=?")->execute([(int)$_GET['eliminar_rep']]);
-  registrar_bitacora('eliminar_reporte', 'reportes', 'Elimino reporte id=' . (int)$_GET['eliminar_rep']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['eliminar_rep']) && es_admin()) {
+  $db->prepare("DELETE FROM reportes_guardados WHERE id_reporte=?")->execute([(int)$_POST['eliminar_rep']]);
+  registrar_bitacora('eliminar_reporte', 'reportes', 'Elimino reporte id=' . (int)$_POST['eliminar_rep']);
   flash_set('ok', 'Reporte eliminado.');
   redirect(base_url('public/index.php?p=reportes'));
 }
@@ -79,7 +79,7 @@ include __DIR__ . '/../includes/header.php';
         <td><small><?= e($g['fecha_generacion']) ?></small></td>
         <td><?= e($g['usuario'] ?? '—') ?></td>
         <td><small class="muted">Pend: <?= (int)($rj['pendientes'] ?? 0) ?> · Sin desc: <?= (int)($rj['sin_descripcion'] ?? 0) ?> · Cal: <?= e($rj['calidad_promedio'] ?? '—') ?>%</small></td>
-        <?php if (es_admin()): ?><td><a class="btn btn-sm danger" data-confirm="¿Eliminar reporte guardado?" href="?p=reportes&eliminar_rep=<?= $g['id_reporte'] ?>">Eliminar</a></td><?php endif; ?>
+        <?php if (es_admin()): ?><td><form method="post" data-confirm="¿Eliminar reporte guardado?"><?= csrf_field() ?><input type="hidden" name="eliminar_rep" value="<?= (int)$g['id_reporte'] ?>"><button class="btn btn-sm danger">Eliminar</button></form></td><?php endif; ?>
       </tr>
     <?php endforeach; ?>
   </tbody></table>

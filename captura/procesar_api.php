@@ -18,8 +18,24 @@ try {
   $ip = validar_host_publico($host);
   $muestra = '';
 try {
-  $ctx = stream_context_create(['http'=>['timeout'=>6,'header'=>"User-Agent: MetaDataManager/1.0\r\n"]]);
-  $muestra = @file_get_contents($url, false, $ctx);
+  $puerto = (int)($partes['port'] ?? ($partes['scheme'] === 'https' ? 443 : 80));
+  if (function_exists('curl_init')) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_FOLLOWLOCATION => false,
+      CURLOPT_TIMEOUT => 6,
+      CURLOPT_CONNECTTIMEOUT => 4,
+      CURLOPT_HTTPHEADER => ["User-Agent: MetaDataManager/1.0"],
+      CURLOPT_RESOLVE => ["{$host}:{$puerto}:{$ip}"],
+      CURLOPT_SSL_VERIFYPEER => true,
+    ]);
+    $muestra = @curl_exec($ch);
+    curl_close($ch);
+  } else {
+    // Sin cURL no se puede fijar la IP validada con SNI; se omite la muestra.
+    $muestra = '';
+  }
   if ($muestra) $muestra = mb_substr($muestra, 0, 2000);
 } catch (Exception $e) {}
 $desc = "Recurso API registrado: $url." . ($muestra ? " Respuesta de ejemplo almacenada (primeros 2KB)." : " Sin respuesta de ejemplo (URL descriptiva).");

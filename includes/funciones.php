@@ -113,9 +113,17 @@ function obtener_config($clave, $defecto = null) {
   } catch (Exception $ex) { return $defecto; }
 }
 
+/** Comando Python permitido: py/python/python3 o una ruta de archivo existente. */
+function python_path_valido($valor) {
+  $valor = trim((string)$valor);
+  if ($valor === '') return false;
+  if (in_array(strtolower($valor), ['py', 'python', 'python3'], true)) return true;
+  return is_file($valor);
+}
+
 function python_cmd() {
-  $c = obtener_config('python_path', null);
-  if ($c) return $c;
+  $c = trim((string) obtener_config('python_path', ''));
+  if (python_path_valido($c)) return $c;
   return defined('PYTHON_CMD') ? PYTHON_CMD : 'py';
 }
 
@@ -132,7 +140,7 @@ function ejecutar_python($script, array $payload = []) {
 $tmpIn = tempnam(sys_get_temp_dir(), 'mdm_in_');
 $tmpOut = $tmpIn . '.out.json';
 file_put_contents($tmpIn, json_encode($payload, JSON_UNESCAPED_UNICODE));
-$cmd = python_cmd() . ' ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($tmpIn) . ' ' . escapeshellarg($tmpOut);
+$cmd = escapeshellarg(python_cmd()) . ' ' . escapeshellarg($scriptPath) . ' ' . escapeshellarg($tmpIn) . ' ' . escapeshellarg($tmpOut);
 // proc_open con timeout de 30s (evita colgar PHP si Python se traba)
 $desc = [1 => ['pipe','w'], 2 => ['pipe','w']];
 $proc = proc_open($cmd, $desc, $pipes);
@@ -215,18 +223,16 @@ function validar_host_publico($host) {
     if ($ip === $host) throw new Exception("No se pudo resolver el host: $host");
   }
   if (!filter_var($ip, FILTER_VALIDATE_IP)) throw new Exception("IP no valida para $host.");
+  // IPv4 mapeada en IPv6 (::ffff:127.0.0.1) se evalua como la IPv4 interna.
+  if (stripos($ip, '::ffff:') === 0) {
+    $v4 = substr($ip, 7);
+    if (filter_var($v4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) $ip = $v4;
+  }
   $permitir_local = defined('CAPTURA_PERMITE_LOCAL') && CAPTURA_PERMITE_LOCAL;
   if ($permitir_local) return $ip;
-  $bloqueada = $ip === '::1'
-    || str_starts_with($ip, '127.')
-    || str_starts_with($ip, '10.')
-    || str_starts_with($ip, '192.168.')
-    || str_starts_with($ip, '169.254.')
-    || $ip === '0.0.0.0'
-    || preg_match('/^172\.(1[6-9]|2[0-9]|3[01])\./', $ip)
-    || preg_match('/^f[cd][0-9a-f]{2}:/i', $ip)
-    || preg_match('/^fe80:/i', $ip);
-  if ($bloqueada) {
+  // NO_PRIV_RANGE cubre 10/8, 172.16/12, 192.168/16, fc00::/7 y fd00::/8.
+  // NO_RES_RANGE cubre 0/8, 127/8, 169.254/16, 240/4, ::1, :: y rangos reservados.
+  if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
     throw new Exception("Por seguridad no se permiten conexiones a hosts internos o privados ($host).");
   }
   return $ip;

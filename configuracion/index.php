@@ -10,13 +10,18 @@ $descripcion = 'Ajustes generales del sistema.';
 $db = getDB();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cfg'])) {
   $validas = array_column($db->query("SELECT clave FROM configuracion")->fetchAll(), 'clave');
+  $avisos = [];
   foreach (($_POST['cfg'] ?? []) as $k => $v) {
     if (!in_array($k, $validas, true)) continue; // sin claves arbitrarias
+    if ($k === 'python_path' && !python_path_valido($v)) {
+      $avisos[] = 'python_path no se guardó: use py, python, python3 o una ruta de archivo existente.';
+      continue;
+    }
     $db->prepare("UPDATE configuracion SET valor=? WHERE clave=?")->execute([$v, $k]);
   }
-registrar_bitacora('configurar','configuracion','Actualizo parametros generales');
-flash_set('ok','Configuración guardada.');
-redirect(base_url('public/index.php?p=configuracion'));
+  registrar_bitacora('configurar','configuracion','Actualizo parametros generales');
+  flash_set($avisos ? 'error' : 'ok', $avisos ? implode(' ', $avisos) : 'Configuración guardada.');
+  redirect(base_url('public/index.php?p=configuracion'));
 }
 $rows = $db->query("SELECT * FROM configuracion ORDER BY clave")->fetchAll();
 // Tokens API
@@ -27,9 +32,9 @@ if (!empty($_POST['nuevo_token_nombre'])) {
   flash_set('ok', 'Token creado (cópialo, solo se muestra una vez): ' . $tok);
   redirect(base_url('public/index.php?p=configuracion'));
 }
-if (!empty($_GET['revocar_token'])) {
-  $db->prepare("DELETE FROM api_tokens WHERE id_token=?")->execute([(int)$_GET['revocar_token']]);
-  registrar_bitacora('revocar_token', 'configuracion', 'Revoco token id=' . (int)$_GET['revocar_token']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['revocar_token'])) {
+  $db->prepare("DELETE FROM api_tokens WHERE id_token=?")->execute([(int)$_POST['revocar_token']]);
+  registrar_bitacora('revocar_token', 'configuracion', 'Revoco token id=' . (int)$_POST['revocar_token']);
   flash_set('ok', 'Token revocado.');
   redirect(base_url('public/index.php?p=configuracion'));
 }
@@ -62,7 +67,7 @@ include __DIR__ . '/../includes/header.php';
     <button class="btn btn-primary btn-sm">Crear token</button></form>
   <table class="table"><thead><tr><th>Nombre</th><th>De</th><th>Creado</th><th>Último uso</th><th></th></tr></thead><tbody>
       <?php foreach ($tokens as $t): ?><tr><td><strong><?= e($t['nombre']) ?></strong></td><td><?= e($t['usuario']) ?></td><td><small><?= e($t['fecha_creacion']) ?></small></td><td><small><?= e($t['ultimo_uso'] ?? 'nunca') ?></small></td>
-          <td><a class="btn btn-sm danger" data-confirm="¿Revocar este token?" href="?p=configuracion&revocar_token=<?= $t['id_token'] ?>">Revocar</a></td></tr><?php endforeach; ?>
+          <td><form method="post" data-confirm="¿Revocar este token?"><?= csrf_field() ?><input type="hidden" name="revocar_token" value="<?= $t['id_token'] ?>"><button class="btn btn-sm danger">Revocar</button></form></td></tr><?php endforeach; ?>
   </tbody></table>
 </div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

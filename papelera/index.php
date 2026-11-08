@@ -9,8 +9,8 @@ $titulo = 'Papelera';
 $descripcion = 'Restaura o elimina definitivamente lo borrado.';
 $db = getDB();
 
-if (!empty($_GET['restaurar'])) {
-  $id = (int)$_GET['restaurar'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['restaurar'])) {
+  $id = (int)$_POST['restaurar'];
   $st = $db->prepare("SELECT * FROM papelera WHERE id_item=?"); $st->execute([$id]);
   $item = $st->fetch();
   try {
@@ -67,9 +67,9 @@ flash_set('ok', 'Restaurado correctamente.');
 } catch (Exception $ex) { flash_set('error', 'Error: ' . $ex->getMessage()); }
 redirect(base_url('public/index.php?p=papelera'));
 }
-if (!empty($_GET['purgar'])) {
-  $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([(int)$_GET['purgar']]);
-  registrar_bitacora('purgar', 'papelera', 'Elimino definitivo id=' . (int)$_GET['purgar']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['purgar'])) {
+  $db->prepare("DELETE FROM papelera WHERE id_item=?")->execute([(int)$_POST['purgar']]);
+  registrar_bitacora('purgar', 'papelera', 'Elimino definitivo id=' . (int)$_POST['purgar']);
   flash_set('ok', 'Eliminado definitivamente.');
   redirect(base_url('public/index.php?p=papelera'));
 }
@@ -81,7 +81,9 @@ include __DIR__ . '/../includes/header.php';
   <table class="table"><thead><tr><th>Tipo</th><th>Nombre</th><th>Borrado</th><th>Por</th><th></th></tr></thead><tbody>
       <?php foreach ($items as $i): ?><tr><td><span class="badge"><?= e($i['tipo']) ?></span></td><td><strong><?= e($i['nombre']) ?></strong></td>
           <td><small><?= e($i['fecha']) ?></small></td><td><?= e($i['usuario'] ?? '—') ?></td>
-          <td class="actions"><a class="btn btn-sm btn-primary" href="?p=papelera&restaurar=<?= $i['id_item'] ?>"> Restaurar</a>
-          <a class="btn btn-sm danger" data-confirm="¿Eliminar DEFINITIVAMENTE? No se puede deshacer." href="?p=papelera&purgar=<?= $i['id_item'] ?>">Eliminar</a></td></tr><?php endforeach; ?>
+          <td class="actions">
+            <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="restaurar" value="<?= $i['id_item'] ?>"><button class="btn btn-sm btn-primary">Restaurar</button></form>
+            <form method="post" data-confirm="¿Eliminar DEFINITIVAMENTE? No se puede deshacer." style="display:inline"><?= csrf_field() ?><input type="hidden" name="purgar" value="<?= $i['id_item'] ?>"><button class="btn btn-sm danger">Eliminar</button></form>
+          </td></tr><?php endforeach; ?>
 </tbody></table></div>
 <?php include __DIR__ . '/../includes/footer.php'; ?>
