@@ -15,7 +15,7 @@ Los datos viven dispersos (bases, CSV, JSON, APIs) sin inventario central: nadie
 ## 1.1 Uso de inteligencia artificial (declaración)
 El **desarrollo** de este proyecto se apoyó en un asistente de IA generativa para
 escribir y revisar código, documentación y pruebas; todo el resultado fue revisado,
-ejecutado y verificado por el autor (23 pruebas funcionales y crawl de 20 rutas, en
+ejecutado y verificado por el autor (26 pruebas funcionales y crawl de 20 rutas, en
 `tests/`). La IA **no** interviene en la ejecución del producto: no se llama a
 servicios externos y los datos de la organización no salen del servidor. La
 "inteligencia" que ofrece el sistema es la que implementan los scripts de Python del
@@ -73,7 +73,7 @@ Plataforma central que **registra fuentes, captura activos automáticamente, doc
 Las migraciones versionadas existen solo para actualizar una base creada con una versión anterior del proyecto: `migracion_v2.sql` (nombres de usuario y activos adicionales), `migracion_v3.sql` (tokens API y papelera) y `migracion_v4.sql` (tabla `login_intentos` para el bloqueo de login en el servidor). No hacen falta si se parte de cero, porque `database.sql` ya incluye todo lo que ellas agregan.
 
 ## 8. Criterios de aceptación
-- Batería automatizada 23/23 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, API, fuerza bruta) + crawl 20/20 rutas sin errores (`tests/aceptacion.py`, `tests/crawl.py`).
+- Batería automatizada 26/26 (roles, 403, CRUD, CSV, bulk, búsqueda, calidad, trazabilidad, exports, tokens, 404, API, fuerza bruta) + crawl 20/20 rutas sin errores (`tests/aceptacion.py`, `tests/crawl.py`).
 - Guía de uso y verificación en 10 pasos (`docs/GUIA_USO.md`).
 - `php -l` limpio, Python solo-stdlib compilado.
 

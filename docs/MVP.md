@@ -26,12 +26,12 @@ alcance decidido.
 
 ```bash
 py tests/crawl.py        # 20 pantallas, 0 errores de PHP o MySQL
-py tests/aceptacion.py   # 23 comprobaciones funcionales
+py tests/aceptacion.py   # 26 comprobaciones funcionales
 ```
 
 Ambas suites hablan con la aplicación real servida por Apache, crean y borran sus
 propios datos y no requieren instalar nada más que Python 3. Resultado de la última
-ejecución: **crawl 20/20** y **aceptación 23/23**. La instalación se verifica
+ejecución: **crawl 20/20** y **aceptación 26/26**. La instalación se verifica
 importando solo `database.sql` en una base vacía (18 tablas y datos de ejemplo).
 
 Guion de demostración: [`GUIA_USO.md`](GUIA_USO.md).

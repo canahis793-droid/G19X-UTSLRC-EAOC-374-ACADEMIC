@@ -13,7 +13,7 @@ Probado en XAMPP con **PHP 8.2.12** y **MariaDB 10.4.32**; la búsqueda cumple
 > **Uso de inteligencia artificial:** el desarrollo de este proyecto se apoyó en un
 > asistente de IA (IA generativa) para escribir y revisar código, documentación y
 > pruebas. Todo el resultado fue **revisado, ejecutado y verificado por el autor**
-> (batería de 23 pruebas y crawl de 20 rutas, ver `tests/`). La IA **no** se usa en
+> (batería de 26 pruebas y crawl de 20 rutas, ver `tests/`). La IA **no** se usa en
 > tiempo de ejecución: el sistema no llama a ningún servicio de IA externo y los
 > datos de la organización nunca salen del servidor. La "inteligencia" del producto
 > es la que implementan los scripts de Python del repositorio (TF-IDF, similitud de
@@ -210,7 +210,7 @@ api/             activos.php, fuentes.php, busqueda.php (sesión o ?token=)
 python/          extractor, clasificador, buscador, calidad, enriquecimiento, nlp_utils
 assets/          css/style.css, js/*.js, img/favicon.svg
 docs/            ARQUITECTURA, ENDPOINTS, MANUAL_USUARIO, PRUEBAS, PRD (+Word), MVP
-tests/           crawl.py (20 rutas), aceptacion.py (23 pruebas), README.md
+tests/           crawl.py (20 rutas), aceptacion.py (26 pruebas), README.md
 uploads/         archivos subidos (protegido con .htaccess)
 database.sql     BD completa + datos (18 tablas) · migracion_v2/v3/v4.sql solo para bases viejas
 ```
@@ -221,7 +221,7 @@ Con la aplicacion ya servida por Apache:
 
 ```bash
 py tests/crawl.py        # 20 pantallas, busca errores de PHP
-py tests/aceptacion.py   # 23 pruebas funcionales de los flujos principales
+py tests/aceptacion.py   # 26 pruebas funcionales de los flujos principales
 ```
 
 Solo usan la libreria estandar de Python. Detalle en `tests/README.md`.

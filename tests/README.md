@@ -39,21 +39,21 @@ rutas con problema: 0
 ```
 
 ### `tests/aceptacion.py` — flujos funcionales
-Ejecuta 23 comprobaciones:
+Ejecuta 26 comprobaciones:
 
 | Bloque | Comprueba |
 |---|---|
 | 1. Acceso | login de los 3 roles, 403 de usuario en usuarios/configuracion, 403 de steward en usuarios |
 | 2. Fuentes | crear fuente, verla en el listado, eliminarla (va a papelera) |
 | 3. Captura | sube un CSV real y comprueba que crea el activo con sus metadatos |
-| 4. Clasificacion | analisis masivo con Python |
+| 4. Clasificacion | analisis masivo con Python y validacion real de una sugerencia (accion=validar) |
 | 5. Busqueda | encuentra `clientes` al buscar "compradores" y muestra el % de coincidencia |
 | 6. Calidad | evaluacion masiva y promedio visible |
 | 7. Trazabilidad | crea una relacion y la elimina |
 | 8. Reportes | export CSV, bitacora, test de Python, 404, API JSON |
 | 9. Seguridad | bloqueo tras 5 intentos fallidos y bloqueo que sobrevive a borrar la cookie |
 
-Salida esperada: `RESULTADO: 23 OK, 0 FALLAS`.
+Salida esperada: `RESULTADO: 26 OK, 0 FALLAS`.
 
 La prueba **crea y elimina sus propios datos** (fuente de prueba, CSV de prueba y
 su activo, relacion de prueba). Si se interrumpe a la mitad, se limpian a mano

@@ -47,7 +47,7 @@ Viven en `tests/` y se ejecutan contra la aplicacion ya servida por Apache.
 
 ```bash
 py tests/crawl.py        # recorre las 20 pantallas y busca errores de PHP
-py tests/aceptacion.py   # 23 pruebas funcionales de los flujos principales
+py tests/aceptacion.py   # 26 pruebas funcionales de los flujos principales
 ```
 
 Ambos usan solo la libreria estandar de Python. Aceptan `--url` si la aplicacion
@@ -60,9 +60,9 @@ no esta en `http://localhost/sistema-metadata-management`.
 - PDO sin concatenar variables (revisar codigo).
 - Python funciona sin pip (solo stdlib).
 - Crawl de rutas: 20/20 sin errores.
-- Bateria automatizada: 23/23 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).
+- Bateria automatizada: 26/26 OK (login 3 roles, 403 por rol, CRUD fuentes, captura CSV, clasificacion masiva, validacion real de una sugerencia, busqueda inteligente, calidad masiva, trazabilidad crear/eliminar, export CSV, bitacora, test Python, 404, API JSON, fuerza bruta).
 
-## Última ejecución — 6-nov-2026 · commit e1d8294
+## Última ejecución - 7-nov-2026 · commit fdd60c7
 
 Base `metadata_db` recién importada desde `database.sql` (18 tablas, 3 usuarios,
 6 fuentes, 18 activos, 32 metadatos). Servidor: XAMPP, Apache en el puerto 80 y
@@ -76,10 +76,22 @@ rutas con problema: 0
 
 > py tests/aceptacion.py
 ...
+== 4. Clasificacion asistida ==
+  OK    pagina de clasificacion operativa
+  OK    el analisis masivo deja sugerencias pendientes
+  OK    validar aplica la categoria elegida
+  OK    la fila pasa al historial como validada
+...
 == 9. Proteccion contra fuerza bruta (limite en el servidor) ==
   OK    bloquea tras 5 intentos fallidos
   OK    el bloqueo sobrevive a borrar la cookie
 
 ==============================================
-RESULTADO: 23 OK, 0 FALLAS
+RESULTADO: 26 OK, 0 FALLAS
 ```
+
+Además se verificó en navegador real, con sesión de steward, que al pulsar
+«Validar» el formulario envía `accion=validar` aunque el botón quede deshabilitado;
+la fila pasa al historial como `validada` y el activo cambia de categoría.
+«Aceptar y aplicar» en Enriquecimiento deja la sugerencia en `aceptado`, y un POST
+sin `accion` ya no la marca como rechazada.
