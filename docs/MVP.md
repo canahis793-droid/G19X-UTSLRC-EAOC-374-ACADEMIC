@@ -8,7 +8,7 @@ hacer** el sistema; este documento define **qué se demostró** y **cómo se com
 | Flujo | Qué hace el sistema | Cómo se comprueba |
 |---|---|---|
 | **Captura** | Toma un origen (CSV, JSON, MySQL o API), lo procesa con Python y crea el activo con sus metadatos. | Automático: `tests/aceptacion.py` bloque 3 sube un CSV real por `multipart/form-data` y exige que redirija al detalle y que el activo muestre sus metadatos. Manual: **Captura → CSV** con cualquier archivo de dos columnas. |
-| **Clasificación** | Python sugiere categoría y confianza; el steward valida o rechaza. Ninguna sugerencia se aplica sola. | Automático: bloque 4 ejecuta el análisis masivo y verifica que la página quede operativa con su historial. Manual: **Clasificación → Analizar todos** y revisar el % de confianza de cada sugerencia. |
+| **Clasificación** | Python sugiere categoría y confianza; el steward valida o rechaza. Ninguna sugerencia se aplica sola. | Automático: bloque 4 lanza el análisis masivo como lo hace la pantalla y comprueba que queden sugerencias pendientes; otra comprobación valida una clasificación (`accion=validar`, categoría elegida) y revisa que se guardó en el historial. Manual: **Clasificación → Analizar todos**, elegir una categoría y pulsar **Validar**. |
 | **Búsqueda** | Busca por significado (TF-IDF + sinónimos), no solo por coincidencia exacta, y muestra el % de coincidencia. | Automático: bloque 5 busca "información de compradores" y exige que aparezca "clientes" y un porcentaje. Manual: **Búsqueda** con el mismo texto. |
 | **Calidad** | Califica cada activo de 0 a 100 % con problemas detectados y recomendaciones. | Automático: bloque 6 corre la evaluación masiva y comprueba que el promedio quede visible. Manual: **Calidad → Evaluar todos**. |
 
